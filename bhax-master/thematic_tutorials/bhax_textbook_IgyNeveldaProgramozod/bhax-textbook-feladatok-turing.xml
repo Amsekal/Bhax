@@ -264,11 +264,52 @@ Például ha a=2 és b=3, akkor:</para>
             Megoldás videó: <link xlink:href="https://bhaxor.blog.hu/2018/08/28/labdapattogas">https://bhaxor.blog.hu/2018/08/28/labdapattogas</link>
         </para>
         <para>
-            Megoldás forrása:  
+            Megoldás forrása Ifekkel:  <link xlink:href="pattog.cpp">
+<filename>bhax/thematic_tutorials/bhax_textbook_IgyNeveldaProgramozod/Turing/pattog.cpp</filename>
+            </link>  
         </para>
-        <para>
-            Tanulságok, tapasztalatok, magyarázat...
-        </para>
+       
+            <programlisting>int x = 0;
+    int y = 0;</programlisting>
+<para>Megadom az x és y koordinátákat, innen fog indulni a labda</para>
+            <programlisting>    int iranyx = 1;
+    int iranyy = 1;</programlisting>
+       <para>Megadom az irányokat, ezek fogják befolyásolni a labda haladásának irányát és sebességét. Ha a szám pozitiv, a labda koordinátái nőnek, ha negativ akkor pedig csökkennek.Minél nagyobb a szám, annál gyorsabban fogja elérni a terminál oldalát.     </para>
+            <programlisting>        int sor;
+    int oszlop;</programlisting>
+<para>Ezzel a két változóval fogom biztositani, hogy a labda ne hadja el a terminál területét</para>
+<programlisting>
+    while (true) {
+
+        getmaxyx ( ablak, oszlop , sor );
+
+        mvprintw ( y, x, "X" );
+
+        refresh ();
+        usleep ( 1000000 );
+
+        x = x + iranyx;
+        y = y + iranyy;
+
+        if ( x>=sor) 
+            iranyx *=-1;
+        
+        if ( !(x>0) ) 
+            iranyx *=-1;
+        
+        if ( !(y>0) ) 
+            iranyy *=-1;
+        
+        if ( y>=oszlop ) 
+            iranyy *=-1;
+        
+
+    }</programlisting>
+
+        <para>A getmaxyx függvény segitségével meg tudom állapitani a terminál méretét, mig a mvprintw függvény a labda útvonalát fogja jelezni.</para>
+<para>A refres() usleep() parancsokkal beállitom, milyen sűrün szeretném frissiteni a képernyőt, ami befolyásolja a labda sebességét.</para>
+<para>A következő két sorban a koordinátákat fogom megváltoztatni, úgy, hogy hozzáadom az irány változót.</para>
+<para>Az if-ek segitségével követem nyomon, hogy a labda elérte e a terminál szélét, és ha igen, az irány változó értékét megszorzom (-1)el, hogy visszafelé haladjon a labda.</para>
     </section>                     
 
     <section>
