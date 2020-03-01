@@ -218,7 +218,7 @@ false]]></screen>
             függvényt, azaz a T100 program nem is létezik.                
         </para>
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            Alan Turing, angol matematikus, a Turing gép feltalálója is vizsgálta már ezt a problémát. Neki sikerült bebizonyitania, hogy nem létezik olyan algoritmus, aminek segitségével egy gép meg tudja állapitani egy másik gépről, hogy az le fog e fagyni, végtelen ciklusba fog e lépni.
         </para>
     </section>        
                 
@@ -321,16 +321,28 @@ Például ha a=2 és b=3, akkor:</para>
         <para>
             Megoldás videó: <link xlink:href="https://youtu.be/9KnMqrkj_kU">https://youtu.be/9KnMqrkj_kU</link>, 
             <link xlink:href="https://youtu.be/KRZlt1ZJ3qk">https://youtu.be/KRZlt1ZJ3qk</link>, 
-            <link xlink:href=""></link>.
+            <link xlink:href="https://www.youtube.com/watch?v=dzL-lwjhk40">Futás közben</link>.
         </para>
         <para>
-            Megoldás forrása: <link xlink:href="Turing/bogomips.c">
+            Megoldás forrása Bogomips: <link xlink:href="Turing/bogomips.c">
                 <filename>bhax/thematic_tutorials/bhax_textbook_IgyNeveldaProgramozod/Turing/bogomips.c</filename>
             </link>
         </para>
+<para>Megoldás forrása Szóhossz:<link xlink:href="Eltolas.cpp"><filename>bhax/thematic_tutorials/bhax_textbook_IgyNeveldaProgramozod/Eltolas.cpp</filename>
+            </link> </para>
+ <programlisting>int szo=1,db=1;</programlisting>
         <para>
-            Tanulságok, tapasztalatok, magyarázat... 
+            Két változót fogok használni: a szo változóban lesz az a szám, amit binárisan el fogok tolni, mig a db-ben fogom tárolni az eltolások számát.
         </para>
+<para>Ezek után egy while ciklusban bináris shiftelés segitségével megnétem a szóhosszt. A db változót azért inditom 1-től, mert a ciklusba nem a szo változó értékével kezdünk, hanem annak az eggyel eltolt változatával. Ezt az eltolást addig csinálom, amig pozitiv számokat kapok.</para>
+<para>Példa bináris eltolásra:</para>
+<para>Az 1 bináris értéke 1, ha ezt binárisa eggyel eltoljuk, az eredmény 10, ami a 2-nek felel meg. Ha még egy eltolást végzünk, a kapott szám 100 lesz, ami a 3-nak felel meg.</para>
+<para>A program által elvégzett eltolások eredményei:</para>
+<mediaobject>
+                <imageobject>
+                    <imagedata fileref="img/Shift.png" scale="50" />
+                </imageobject>
+</mediaobject>
     </section>                     
 
     <section>
@@ -340,14 +352,79 @@ Például ha a=2 és b=3, akkor:</para>
             értékét!
         </para>
         <para>
-            Megoldás videó: <link xlink:href=""></link>
+            Megoldás videó: <link xlink:href="https://youtu.be/9C_KZFyODLY"></link>
         </para>
         <para>
-            Megoldás forrása: <link xlink:href=""></link>
+            Megoldás forrása : <link xlink:href="pag.c">
+<filename>bhax/thematic_tutorials/bhax_textbook_IgyNeveldaProgramozod/Turing/pag.c</filename>
+            </link>  
         </para>
+<para>A PageRank az internetes weboldalakat hivatott "rangsorolni", ezt a rendszert használja például a Google is. Az algoritmus lényege az, hogy végignézze egy oldalra hány hyperlink mutat, ugyanis az a koncepció, hogy egy 'A' oldalon csak akkor van egy másik 'B' oldalra vezető hyperlink, ha a 'B' oldalt jónak tartja az 'A' oldal szerkesztője. Tehát a hyperlink felfogható egyfajta szavazatként is. </para><programlisting ><![CDATA[
+#include <stdio.h>
+#include <math.h>
+
+void
+PageRankKiiras (double tomb[], int db)
+{
+int i;
+for (i=0; i<db; i++)
+printf("PageRank [%d]: %lf\n", i+1, tomb[i]);
+}
+
+double tavolsag(double pr[],double pr_temp[],int db)
+{
+double tav = 0.0;
+int i;
+for(i=0;i<db;i++)
+tav +=(pr[i] - pr_temp[i])*(pr[i] - pr_temp[i]);
+
+return sqrt (tav);
+}
+
+int main(void)
+{
+double Lapok[4][4] = {
+{1.0/2.0, 0.0, 	1.0/3.0, 	0.0},
+{0.0, 1.0/3.0, 	1.0/3.0,	1.0},
+{0.0, 1.0/3.0, 	0.0, 		0.0},
+{1.0/2.0, 1.0/3.0, 	1.0/3.0,	0.0}
+};
+
+double PageRank[4] = {0.0, 0.0, 0.0, 0.0};
+double Temp_PageRank[4] = {1.0 / 4.0, 1.0 / 4.0, 1.0 / 4.0, 1.0 / 4.0};
+
+long int i,j;
+i=0; j=0;
+
+for (;;)
+{
+for(i=0;i<4;i++)
+PageRank[i] = Temp_PageRank[i];
+for (i=0;i<4;i++)
+{
+double temp=0;
+for (j=0;j<4;j++)
+temp+=Lapok[i][j]*PageRank[j];
+Temp_PageRank[i]=temp;
+}
+
+if ( tavolsag(PageRank,Temp_PageRank, 4) < 0.000001)
+break;
+}
+PageRankKiiras (PageRank,4);
+return 0;
+
+} 
+
+
+]]>
+
+</programlisting>
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            A programban található mátrix mutatja meg nekünk, hogy melyik oldal melyik oldalra mutat:
         </para>
+<para>Az első oszlop megmutatja, hogy az 'A' oldal önmagára és a 'D' weboldalra mutat, a 'B'oldal önmagára, a 'C' és a 'D' oldalra mutat, stb. </para>
+<para>A PageRank, kezdetben üres tömb, szerepe az eredmények eltárolása lesz, a Temp_PageRank pedig, nevéből is itélhetve ideiglenes eredményeket fog eltárolni, amiket majd később felhasználunk. Minden lap ugyanakkora értékkel indul, ezek fognak egy ciklusban egészen addig, amig nem teljesül a ciklus megtörésének feltétele. Ha a ciklusnak vége, akkor megvannak az eredmények, amit a külön erre a feladatra szánt alprogrammal ki is iratunk.</para>
     </section>
                                                                                                                                                                                                                                                                                                                                                         
     <section xml:id="bhax-textbook-feladatok-turing.MontyHall">
@@ -362,8 +439,45 @@ Például ha a=2 és b=3, akkor:</para>
             Megoldás forrása: <link xlink:href="https://gitlab.com/nbatfai/bhax/tree/master/attention_raising/MontyHall_R">https://gitlab.com/nbatfai/bhax/tree/master/attention_raising/MontyHall_R</link>
         </para>
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            A Monty Hall paradoxon először az amerikai Let's Make a Deal nevű müsorban került bemutatásra, nevét is a műsor vezetőjéről kapta. Maga a paradoxon alaphelyzete nagyon egyszerű:
         </para>
+<para>A játékos három ajtó közül választhatott: 2 ajtó mögött egy-egy kecske rejtőzött, mig a harmadik ajtó mögött egy autó.</para>
+<para>Miután a játékos választott, a műsorvezető kinyitott egy ajtót, ami mögött egy kecske rejtőzott.</para>
+<para>Ezek után a játékosnak lehetősége nyilt válzotatni a döntésén.</para>
+<para>A józan ész azt diktálja, hogy teljesen mindegy, hogy változtat e a döntésén a játékos, 50 százaléka lesz nyerni. Azonban ez a gondolatmenet nem helyes, és ez a tény egy program segitségével is kimutatható. Mig a választás előtt minden ajtónak 1/3 esélye van, hogy ő rejtse az autót, miután a műsorvezető kinyitotta az egyik vesztes ajtót, a játékos által választottnak továbbra is 1/3 esélye van, de a másik zárt ajtónak már 2/3.</para>
+<programlisting>kiserletek_szama=10000
+kiserlet = sample(1:3, kiserletek_szama, replace=T)
+jatekos = sample(1:3, kiserletek_szama, replace=T)
+musorvezeto=vector(length = kiserletek_szama)
+
+for (i in 1:kiserletek_szama) {
+
+    if(kiserlet[i]==jatekos[i]){
+    
+        mibol=setdiff(c(1,2,3), kiserlet[i])
+    
+    }else{
+    
+        mibol=setdiff(c(1,2,3), c(kiserlet[i], jatekos[i]))
+    
+    }
+
+    musorvezeto[i] = mibol[sample(1:length(mibol),1)]
+
+}
+
+nemvaltoztatesnyer= which(kiserlet==jatekos)
+valtoztat=vector(length = kiserletek_szama)
+
+for (i in 1:kiserletek_szama) {
+
+    holvalt = setdiff(c(1,2,3), c(musorvezeto[i], jatekos[i]))
+    valtoztat[i] = holvalt[sample(1:length(holvalt),1)]
+    
+}
+
+valtoztatesnyer = which(kiserlet==valtoztat)</programlisting>
+<para>A fenti kódban is pontosan ezt vizsgáljuk. Abban az esetben, ha a játékos jól választ, a nemvaltozasnyer lesz a helyes, mig ha a változtatás után fog a helyes ajtóra mutatni, akkor a valtoztatasnyer. </para>
     </section>
 
     <section xml:id="Brun">
