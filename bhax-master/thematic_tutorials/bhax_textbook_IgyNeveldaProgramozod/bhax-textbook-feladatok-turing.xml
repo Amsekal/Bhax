@@ -14,6 +14,7 @@
         <para>
             Megoldás videó: <link xlink:href="https://youtu.be/lvmi6tyz-nI">https://youtu.be/lvmi6tyz-nI</link>
         </para>
+<para>Videó: <link xlink:href="https://www.youtube.com/watch?v=bI-yjJ58zLc">https://www.youtube.com/watch?v=bI-yjJ58zLc</link></para>
         <para>
             Megoldás forrása: <link xlink:href="Turing/infty-f.c">
                 <filename>bhax/thematic_tutorials/bhax_textbook_IgyNeveldaProgramozod/Turing/infty-f.c</filename>
@@ -141,9 +142,7 @@ KiB Swap:16724988 total,16724988 free,       0 used. 13751608 avail Mem
         <para>
             Mutasd meg, hogy nem lehet olyan programot írni, amely bármely más programról eldönti, hogy le fog-e fagyni vagy sem!
         </para>
-        <para>
-            Megoldás videó:
-        </para>
+
         <para>
             Megoldás forrása:  tegyük fel, hogy akkora haxorok vagyunk, hogy meg tudjuk írni a <function>Lefagy</function>
             függvényt, amely tetszőleges programról el tudja dönteni, hogy van-e benne vlgtelen ciklus:              
@@ -229,7 +228,7 @@ false]]></screen>
             nasználata nélkül!
         </para>
         <para>
-            Megoldás videó: <link xlink:href="https://bhaxor.blog.hu/2018/08/28/10_begin_goto_20_avagy_elindulunk">https://bhaxor.blog.hu/2018/08/28/10_begin_goto_20_avagy_elindulunk</link>
+            Megoldás videó: <link xlink:href="https://www.youtube.com/watch?v=E-A9iyUPRrA">https://www.youtube.com/watch?v=E-A9iyUPRrA</link>
         </para>
         <para>
             Megoldás forrása:<link xlink:href="csere.cpp">
@@ -424,7 +423,7 @@ return 0;
             A programban található mátrix mutatja meg nekünk, hogy melyik oldal melyik oldalra mutat:
         </para>
 <para>Az első oszlop megmutatja, hogy az 'A' oldal önmagára és a 'D' weboldalra mutat, a 'B'oldal önmagára, a 'C' és a 'D' oldalra mutat, stb. </para>
-<para>A PageRank, kezdetben üres tömb, szerepe az eredmények eltárolása lesz, a Temp_PageRank pedig, nevéből is itélhetve ideiglenes eredményeket fog eltárolni, amiket majd később felhasználunk. Minden lap ugyanakkora értékkel indul, ezek fognak egy ciklusban egészen addig, amig nem teljesül a ciklus megtörésének feltétele. Ha a ciklusnak vége, akkor megvannak az eredmények, amit a külön erre a feladatra szánt alprogrammal ki is iratunk.</para>
+<para>A PageRank, kezdetben üres tömb, szerepe az eredmények eltárolása lesz, a Temp_PageRank pedig, nevéből is itélhetve ideiglenes eredményeket fog eltárolni, amiket majd később felhasználunk. Minden lap ugyanakkora értékkel indul, ezek fognak egy ciklusban egészen addig változni, amig nem teljesül a ciklus megtörésének feltétele. Ha a ciklusnak vége, akkor megvannak az eredmények, amit a külön erre a feladatra szánt alprogrammal ki is iratunk.</para>
     </section>
                                                                                                                                                                                                                                                                                                                                                         
     <section xml:id="bhax-textbook-feladatok-turing.MontyHall">
