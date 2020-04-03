@@ -45,14 +45,36 @@
             Majd mutass be olyan kódcsipeteket, amelyek adott szabvánnyal nem fordulnak (például C89), mással (például C99) igen.
         </para>
         <para>
-            Megoldás videó: 
+            Megoldás videó: <link xlink:href="https://www.youtube.com/watch?v=KAhxMUW1rVc ">https://www.youtube.com/watch?v=KAhxMUW1rVc </link>
         </para>
         <para>
-            Megoldás forrása:  
+            Megoldás forrása:<link xlink:href="Chomsky/hivatkozas.c">
+                <filename>bhax/thematic_tutorials/bhax_textbook_IgyNeveldaProgramozod/Chomsky/hivatkozas.c</filename>
+            </link>   
         </para>
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
-        </para>
+            Először irok egy for ciklust.</para>
+<programlisting language="c"><![CDATA[%{
+#include <stdio.h>
+
+int main()
+{int s=0;
+for ( int i=0;i<5;i++)
+s++;
+printf("Vege\n");
+return 0;
+}
+]]></programlisting>
+     <para>A leirt program nem fut le C98-as szabványt használva, mivel ebben a szabványban még nem volt lehetséges ciklusváltozó deklarálása. Ha ezt a kódot szeretnénk C89-es szabvánnyal futtatni, az alábbi módon lehetne:</para> 
+<programlisting language="c"><![CDATA[%{ #include <stdio.h>
+
+int main()
+{int i,s=0;
+for ( i=0;i<5;i++)
+s++;
+printf("Vege\n");
+return 0;
+} ]]></programlisting>
     </section>                     
 
     <section>
@@ -64,21 +86,29 @@
         </para>
         <para>
             Megoldás videó: <link xlink:href="https://youtu.be/9KnMqrkj_kU">https://youtu.be/9KnMqrkj_kU</link> (15:01-től).
+Futás közben:<link xlink:href="https://www.youtube.com/watch?v=_ycGBg5CF_k">https://www.youtube.com/watch?v=_ycGBg5CF_k</link>
         </para>
         <para>
             Megoldás forrása: <link xlink:href="Chomsky/realnumber.l">
                 <filename>bhax/thematic_tutorials/bhax_textbook_IgyNeveldaProgramozod/Chomsky/realnumber.l</filename>
             </link> 
         </para>
+<para>A használt program 3 részből áll:</para>
         <programlisting language="c"><![CDATA[%{
 #include <stdio.h>
 int realnumbers = 0;
-%}
+%}]]></programlisting>
+<para>Az első rész sima C kód, amelyben deklarálunk egy realnumbers nevű változót, ami a valós számok előfordulását fogja számolni. Ezt a változót 0-tól inditjuk.</para>
+ <programlisting language="c"><![CDATA[%{
 digit	[0-9]
 %%
 {digit}*(\.{digit}+)?	{++realnumbers; 
     printf("[realnum=%s %f]", yytext, atof(yytext));}
-%%
+%%]]></programlisting>
+<para>A második részben már nem csak C kód található. Itt megadjuk a keresési feltételeket: egy olyan szövegrészletet keresünk, ahol 0 vagy több számjegy van (ezt jelzi a digit *), amit egy pont követ, ami után 1 vagy annál több számjegyet találunk.
+A pont előtti \ azt a célt szolgálja, hogy a program felismerje, hogy mi a pontra, mint karakterre gondolunk, nem egy bármilyen karakterre.
+Ezek után ismét C kód következik, ezzel kiiratjuk a szövegbe, ha találunk egy valós számot, és növeljük a realnumbers változó értékét eggyel.</para>
+ <programlisting language="c"><![CDATA[%{
 int
 main ()
 {
@@ -88,7 +118,9 @@ main ()
 }
 ]]></programlisting>
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            A harmadik kódrészletben hivjuk meg a lexikális elemzőt, ami az általunk megadott feltételek alapján fog keresni a szövegben.
+
+Egy lexikális elemző nagyon hasznos tud lenni, ugyanis a segitségével a programunknak nem betűnként kell beolvasnia a forrást, igy sok időt és erőforrást tudunk megspórolni.
         </para>
     </section>                     
 
@@ -99,6 +131,7 @@ main ()
         </para>
         <para>
             Megoldás videó: <link xlink:href="https://youtu.be/06C_PqDpD_k">https://youtu.be/06C_PqDpD_k</link>
+ </para><para>Futás közben:<link xlink:href="https://www.youtube.com/watch?v=-OrREI6GZKI">https://www.youtube.com/watch?v=-OrREI6GZKI</link>
         </para>
         <para>
             Megoldás forrása: <link xlink:href="Chomsky/l337d1c7.l">
@@ -201,7 +234,8 @@ main()
 }
 ]]></programlisting>
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            A leet nyelv lényege, hogy a betűket rájuk hasonló számmal vagy más karakterekkel helyettesitsünk, például az a helyett használhajuk: 4, @, /-\\.
+	A program hasonlit az előző feladathoz, azzal a különbséggel, hogy most nem számokat keresünk, hanem betűket. Létrehozunk egy tömböt, ahol eltároljuk a betüket és leet megfeleőiket. Eztuán egy for ciklus segitségével megkeressük a betűt ebben a tömben, és egy randomizáló rész segitségével véletlenszerűen választunk egy leet megfelelőt a megadottakból. Ha egy betűnek nincs leet megfelelője, változtatás nélkül kiiratásra kerül.
         </para>
     </section>                     
 
@@ -229,47 +263,46 @@ main()
         <orderedlist numeration="lowerroman">
             <listitem>                                    
                 <programlisting><![CDATA[if(signal(SIGINT, SIG_IGN)!=SIG_IGN)
-    signal(SIGINT, jelkezelo);]]></programlisting>
+    signal(SIGINT, jelkezelo);
+//INTERACT signal esetén a jelkezelő eldönti, hogyan reagáljon a program]]></programlisting>
             </listitem>
             <listitem>                                    
-                <programlisting><![CDATA[for(i=0; i<5; ++i)]]></programlisting>            
-            </listitem>
-            <listitem>                                    
-
-                <programlisting><![CDATA[for(i=0; i<5; i++)]]></programlisting>            
-            </listitem>
-            <listitem>                                    
-
-                <programlisting><![CDATA[for(i=0; i<5; tomb[i] = i++)]]></programlisting>            
+                <programlisting><![CDATA[for(i=0; i<5; ++i)
+//Inditunk egy for ciklust, ahol i 0-tól indul, és a ciklusban lévő utasitások elvégzése előtt nő az értéke.]]></programlisting>            
             </listitem>
             <listitem>                                    
 
-                <programlisting><![CDATA[for(i=0; i<n && (*d++ = *s++); ++i)]]></programlisting>            
+                <programlisting><![CDATA[for(i=0; i<5; i++)
+//For ciklus, ahol az i értéke a ciklusban lévő utasitások elégzése után nő]]></programlisting>            
             </listitem>
             <listitem>                                    
 
-                <programlisting><![CDATA[printf("%d %d", f(a, ++a), f(++a, a));]]></programlisting>            
+                <programlisting><![CDATA[for(i=0; i<5; tomb[i] = i++)
+// Egy for ciklus, ahol egy tömbi i-edik eleme felveszi az i+1 értéket, és az i nő a ciklus végén]]></programlisting>            
             </listitem>
             <listitem>                                    
 
-                <programlisting><![CDATA[printf("%d %d", f(a), a);]]></programlisting>            
+                <programlisting><![CDATA[for(i=0; i<n && (*d++ = *s++); ++i)
+//Egy for ciklus, ami addig megy amig i kisebb mint n és a d pointer egyenlő az s pointerrel.]]></programlisting>            
             </listitem>
             <listitem>                                    
 
-                <programlisting><![CDATA[printf("%d %d", f(&a), a);]]></programlisting>            
+                <programlisting><![CDATA[printf("%d %d", f(a, ++a), f(++a, a));
+//Kiirunk két számot, amit az f függvény állit elő.]]></programlisting>            
+            </listitem>
+            <listitem>                                    
+
+                <programlisting><![CDATA[printf("%d %d", f(a), a);
+//Kiirunk két számot, az egyiket az f függvény állitja elő az a változó segitségével, a másik szám pedig az a változó.]]></programlisting>            
+            </listitem>
+            <listitem>                                    
+
+                <programlisting><![CDATA[printf("%d %d", f(&a), a);
+//Kiir két számot, az egyiket az f függyvény segitségével, a másik pedig az a értéke lesz, ami ha a függvényben megváltozott, a változás megmarad.]]></programlisting>            
             </listitem>
         </orderedlist>
-        <para>
-            Megoldás forrása:  
-        </para>
 
-        <para>
-            Megoldás videó: 
-        </para>
 
-        <para>
-            Tanulságok, tapasztalatok, magyarázat...
-        </para>
 
     </section>                     
 
@@ -295,13 +328,28 @@ $(\exists y \forall x (y<x) \supset \neg (x \text{ prím}))$
         </para>
 
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            1.Minden x esetén igaz, hogy van olyan y, amely nagyobb mint x és primszám.
         </para>
-    </section>                                                                                                                                                                            
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+        <para>
+          2. Minden x esetén igaz, hogy van olyan y, amely nagyobb mint x, primszám és az y+2 is primszám.
+        </para>
+        <para>
+           3. Létezik olyan y, amely minden x primnél nagyobb
+        </para>
+        <para>
+           4. Létezik olyan y, amelynél egyik x sem kisebb és prim.
+        </para>   	                                                                                                                                                                               
+          	</section>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
     <section>
         <title>Deklaráció</title>
-            
+            <para>
+            Megoldás videó: <link xlink:href="https://www.youtube.com/watch?v=rjaIqjzDVC4">https://www.youtube.com/watch?v=rjaIqjzDVC4</link>
+        </para>
+        <para>
+            Megoldás forrása:   <link xlink:href="Chomsky/deklaracio.cpp">
+                <filename>bhax/thematic_tutorials/bhax_textbook_IgyNeveldaProgramozod/Chomsky/deklaracio.cpp</filename> </link>
+        </para>
         <para>
             Vezesd be egy programba (forduljon le) a következőket: 
         </para>
@@ -345,44 +393,39 @@ $(\exists y \forall x (y<x) \supset \neg (x \text{ prím}))$
 
         <itemizedlist>
             <listitem>
-                <programlisting><![CDATA[int a;]]></programlisting>            
+                <programlisting><![CDATA[int a;// integer tipusú változó]]></programlisting>            
             </listitem>
             <listitem>
-                <programlisting><![CDATA[int *b = &a;]]></programlisting>            
+                <programlisting><![CDATA[int *b = &a;//b pointer, ami a memóriaciméra mutat]]></programlisting>            
             </listitem>
             <listitem>
-                <programlisting><![CDATA[int &r = a;]]></programlisting>            
+                <programlisting><![CDATA[int &r = a;//r hivatkozás a-ra]]></programlisting>            
             </listitem>
             <listitem>
-                <programlisting><![CDATA[int c[5];]]></programlisting>            
+                <programlisting><![CDATA[int c[5];//c tömb]]></programlisting>            
             </listitem>
             <listitem>
-                <programlisting><![CDATA[int (&tr)[5] = c;]]></programlisting>            
+                <programlisting><![CDATA[int (&tr)[5] = c;//tr tömb referencia c tömbre]]></programlisting>            
             </listitem>
             <listitem>
-                <programlisting><![CDATA[int *d[5];]]></programlisting>            
+                <programlisting><![CDATA[int *d[5];// d pointerekből álló tömb]]></programlisting>            
             </listitem>
             <listitem>
-                <programlisting><![CDATA[int *h ();]]></programlisting>            
+                <programlisting><![CDATA[int *h ();//egészre mutató visszaadó függvény]]></programlisting>            
             </listitem>
             <listitem>
-                <programlisting><![CDATA[int *(*l) ();]]></programlisting>            
+                <programlisting><![CDATA[int *(*l) ();//mutatóra mutató függvény]]></programlisting>            
             </listitem>
             <listitem>
-                <programlisting><![CDATA[int (*v (int c)) (int a, int b)]]></programlisting>            
+                <programlisting><![CDATA[int (*v (int c)) (int a, int b)//Függvénymutató, ami egy egészet visszaadó függvényre mutató mutatóval visszatérő függvény]]></programlisting>            
             </listitem>            
             <listitem>
-                <programlisting><![CDATA[int (*(*z) (int)) (int, int);]]></programlisting>            
+                <programlisting><![CDATA[int (*(*z) (int)) (int, int);//Függvénymutató, ami egy egészet visszaadó függvényre mutató mutatót visszaadó függvényre mutat]]></programlisting>            
             </listitem>            
         </itemizedlist>       
 
 
-        <para>
-            Megoldás videó: 
-        </para>
-        <para>
-            Megoldás forrása:  
-        </para>
+        
         <para>
             Az utolsó két deklarációs példa demonstrálására két olyan kódot
             írtunk, amelyek összahasonlítása azt mutatja meg, hogy miért 
