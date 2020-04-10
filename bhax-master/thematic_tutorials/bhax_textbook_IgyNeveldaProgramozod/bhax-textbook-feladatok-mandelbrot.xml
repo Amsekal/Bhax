@@ -18,9 +18,7 @@
         </para>
         <para>
             Megoldás forrása:                
- <link xlink:href="https://github.com/Amsekal/Bhax/blob/master/bhax-master/attention_raising/CUDA/mandelpngt.c%2B%2B">
-                <filename>https://github.com/Amsekal/Bhax/blob/master/bhax-master/attention_raising/CUDA/mandelpngt.c%2B%2B</filename>
-            </link>             
+ https://github.com/Amsekal/Bhax/blob/master/bhax-master/attention_raising/CUDA/mandelpngt.c%2B%2B          
         </para>
                 <figure>
             <title>A Mandelbrot halmaz a komplex síkon</title>
@@ -37,18 +35,6 @@
   	A Mandelbrot halmaz egy olyan komplex számok halmaza, amelyet ha kivetitűnk a sikra egy látványos és egyben érdekes alakzatot kapunk. Ezt a halmazt olyan számok alkotják, amelyeknek van valós és imaginárius részük is, igy lehetséges az is, hogy gyök alatt negativ számunk legyen.
         </para>
 
-        <para>
-            Azaz kiindulunk az origóból (z<subscript>0</subscript>) 
-            és elugrunk a rács első pontjába a z<subscript>1</subscript> = c-be, 
-            aztán a c-től függően a további z-kbe. Ha ez az utazás kivezet a 
-            2 sugarú körből, akkor azt mondjuk, hogy az a vizsgált rácspont 
-            nem a Mandelbrot halmaz eleme. Nyilván nem tudunk végtelen sok 
-            z-t megvizsgálni, ezért csak véges sok z elemet nézünk meg minden 
-            rácsponthoz. Ha eközben nem lép ki a körből, akkor feketére 
-            színezzük, hogy az a c rácspont a halmaz része. (Színes meg úgy 
-            lesz a kép, hogy változatosan színezzük, például minél későbbi 
-            z-nél lép ki a körből, annál sötétebbre). 
-        </para>       
         <para> 
 	A kód segitségével megállapitjuk, hogy egy pont mikor eleme a halmaznak. Ha eleme, a pontot feketére szinezzük.       
         </para>
@@ -63,10 +49,11 @@
         <para>
             Megoldás videó: <link xlink:href="https://youtu.be/gvaqijHlRUs">https://youtu.be/gvaqijHlRUs</link>
         </para>
-        <para>
-            Megoldás forrása:  <link xlink:href="https://github.com/Amsekal/Bhax/blob/master/bhax-master/attention_raising/Mandelbrot/3.1.2.cpp">
-                <filename>https://github.com/Amsekal/Bhax/blob/master/bhax-master/attention_raising/Mandelbrot/3.1.2.cpp</filename>               
+                <para>
+            Forrás: https://github.com/Amsekal/Bhax/blob/master/bhax-master/attention_raising/Mandelbrot/3.1.2.cpp 
         </para>
+
+        
 <para>
 Hasonlóan az előző feladathoz, itt is az a célunk, hogy a Mandelbrot halmazt kirajzoljuk, tehát a két végeredménynek azonosnak kell lennie. A különbség csak annyi, hogy ebben a programban használni fogunk egy osztályt, ami segit a komplex számok kezelésében.
         </para>
