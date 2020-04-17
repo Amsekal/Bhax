@@ -21,10 +21,10 @@ main ( )
 
         getmaxyx ( ablak, oszlop , sor );
 
-        mvprintw ( y, x, "X" );
+        mvprintw ( y, x, "PROG1" );
 
         refresh ();
-        usleep ( 10000 );
+        usleep ( 50000 );
 
         x = x + iranyx;
         y = y + iranyy;

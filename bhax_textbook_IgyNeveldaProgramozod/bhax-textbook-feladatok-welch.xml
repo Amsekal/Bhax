@@ -14,15 +14,96 @@
             nincs eltéve kiszámolt szám.
         </para>
         <para>
-            Megoldás videó:
+            Megoldás videó C++:<link xlink:href="https://www.youtube.com/watch?v=-0uMOANtCPA">https://www.youtube.com/watch?v=-0uMOANtCPA</link>
         </para>
         <para>
-            Megoldás forrása:                
+            Megoldás videó Java:<link xlink:href="https://www.youtube.com/watch?v=TGpmeDn7KBY">https://www.youtube.com/watch?v=TGpmeDn7KBY</link>
         </para>
         <para>
-            Tanulságok, tapasztalatok, magyarázat... térj ki arra is, hogy a JDK forrásaiban a Sun programozói
-            pont úgy csinálták meg ahogyan te is, azaz az OO nemhogy nem nehéz, hanem éppen természetes neked!
-        </para>                
+            Megoldás forrása: https://github.com/Amsekal/Bhax/tree/master/bhax_textbook_IgyNeveldaProgramozod/Welch  Illetve https://sourceforge.net/p/udprog/code/ci/master/tree/source/kezdo/elsojava/PolarGen.java#l10                
+        </para>
+        <para>
+A kód maga igen egyszerű. Először is, szükség lesz egy osztályra:
+
+        </para>
+<programlisting language="c"><![CDATA[class PolarGen
+{
+public:
+  PolarGen ()
+  {
+    nincsTarolt = true;
+    std::srand (std::time (NULL));
+  }
+   ~PolarGen ()
+  {
+  }
+  double kovetkezo ();
+
+private:
+  bool nincsTarolt;
+  double tarolt;
+
+};
+}]]></programlisting> 
+        <para>
+Az osztályt PolarGennek nevezzük el. Ebben az osztályban 2 privát tag lesz, a boolean tipusu változó, a nincsTarolt, ami azt fogja jelezni számunkra, hogy van e eltárolt érték, és egy double tipusu tarolt nevű változó. A konstruktorban megváltoztatjuk a nincsTarolt értékét igazra, majd létrehozunk egy random számot a srand() függvény segitségével. A destruktort üresen hadjuk. Ezen kivül a kovetkezo alprogram fejlécét találjuk az osztály definiciójában.
+
+        </para>  
+<programlisting language="c"><![CDATA[ double
+PolarGen::kovetkezo ()
+{
+  if (nincsTarolt)
+    {
+      double u1, u2, v1, v2, w;
+      do
+	{
+	  u1 = std::rand () / (RAND_MAX + 1.0);
+	  u2 = std::rand () / (RAND_MAX + 1.0);
+	  v1 = 2 * u1 - 1;
+	  v2 = 2 * u2 - 1;
+	  w = v1 * v1 + v2 * v2;
+	}
+      while (w > 1);
+
+      double r = std::sqrt ((-2 * std::log (w)) / w);
+
+      tarolt = r * v2;
+      nincsTarolt = !nincsTarolt;
+
+      return r * v1;
+    }
+  else
+    {
+      nincsTarolt = !nincsTarolt;
+      return tarolt;
+    }
+}
+
+}]]></programlisting>   
+        <para>
+Hogy a program működjön is, szükség van a kovetkezo alprogramra. Itt, ha a nincsTarolt értéke igaz, akkor egy matematikai képletet fog alkalmazni, hogy végbemenjen a polártranszformáció. A tarolt kap egy értéket a képlet alapján, majd a boolean változót hamisra állitjuk. Ha a nincsTarolt értéke hamis, igazra állitjuk, és visszaadjuk a tarolt értékét.
+        </para>  
+<programlisting language="c"><![CDATA[ int
+main (int argc, char **argv)
+{
+  PolarGen pg;
+
+  for (int i = 0; i < 10; ++i)
+    std::cout << pg.kovetkezo () << std::endl;
+
+  return 0;
+}
+}]]></programlisting>  
+
+        <para>
+Ezek után már csak egy dolgunk maradt, megirni a főfüggvényt. Deklarálunk egy változót ami a PolarGen osztályhoz tartozik, a pg-t, majd egy for ciklusban többször is meghivjuk a következő függvényt, ennek következtében több eredményt is kapunk. A for ciklus után véget ér a program.
+        </para>   
+        <para>
+A java kód is pontosan ugyanezen alapok mellett iródott, egyetlen különbség, hogy ott csak egyszer lesz meghivva az alprogram, igy csak egy eredményt kapunk.
+        </para>       
+        <para>
+Érdekesség, hogy létezik a Sun programozói által készitett Random.java file, ami nagyban hasonlit az általunk elkészitett megoldáshoz.
+        </para>  
     </section>        
 
     <section>
@@ -34,7 +115,7 @@
             Megoldás videó:
         </para>
         <para>
-            Megoldás forrása:                
+            Megoldás forrása:   6.6-os feladatban             
         </para>
     </section>        
         
@@ -47,7 +128,7 @@
             Megoldás videó:
         </para>
         <para>
-            Megoldás forrása:                
+            Megoldás forrása:     6.6-os feladatban           
         </para>
     </section>        
                         
@@ -61,7 +142,7 @@
             Megoldás videó:
         </para>
         <para>
-            Megoldás forrása:                
+            Megoldás forrása: 6.6-os feladatban               
         </para>
     </section>        
                 
@@ -75,7 +156,7 @@
             Megoldás videó: 
         </para>
         <para>
-            Megoldás forrása:  
+            Megoldás forrása:  6.6-os feladatban
         </para>
     </section>                     
 
@@ -86,11 +167,248 @@
             értékadásra alapozva!
         </para>
         <para>
-            Megoldás videó: 
+            Megoldás videó: https://www.youtube.com/watch?v=a_K2EWM53tg
         </para>
         <para>
-            Megoldás forrása:  
+            Megoldás forrása:  https://gitlab.com/nbatfai/bhax/-/blob/master/distance_learning/ziv_lempel_welch/z3a18qa_from_scratch.cpp
         </para>
-    </section>                     
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-</chapter>                
+  
+        <para>
+            Ahogyan látható, az előző feladatokban el kellett készitenünk egy binfát, amit folyamatosan fejlesztünk. Az egyszerűség kedvéért, én az összes alpontot ebben a feladatban fogom bemutatni. 
+        </para>                  
+             <para>
+A Bináris fa egy különleges szerkezet, mivel minden gyökér maximum 2 utóddal rendelkezhet, egy jobboldaliva és egy baloldalival. Előfordulhat olyan eset is, amikor csak az egyik oldalon rendelkezik utóddal, vagy nem rendelkezik egyel sem. A mi binfánk esetében a csomópontokban tárol értékek egyesek és nullások lesznek.
+</para> 
+<para>
+Amikor megkapjuk azt az értéket, legyen most ez 1,amit be szeretnénk tenni a fába, a következő folyamat fog lezajlani: megnézzük, hogy az aktuális csomópontnak/ helyi gyökérnek (legelső gyökér egy '/'-t tárol) van e 1-es utódja. Ha van, a dolgunk egyszerű, az 1-es lesz a következő helyi gyökér. Ha nincs, akkor létrehozunk egy új csomópontot, és az ő utódja lesz az 1. Azt, hogy melyik elemnél tartunk egy pointer mutatja, mikor új csomópontot hozunk létre, ez a pointer visszatér az eredeti gyökérre, a /-re. Ugyanez az algoritmus akkor is, ha az érték 0.
+</para>    
+<para>
+A feladat teljes megétéséhez pár fogalom tisztázásra szorul:
+</para> 
+<para>
+Rekurzió: Rekurzió a programozásban nem jelent mást, mnthogy egy alprogram úgy végzi el a feladatát, hogy segitségül saját magát hivja meg. Fontos megjgyezni, hogy a rekurzió egy úgynevezett verem memóriát használ, ami képes megtelni, esetenként túlcsordulni. Rekurzivan lehet megoldani különböző kereséseket, de akár a backtracking megirásában is segithet.
+</para> 
+<para>
+Konstruktor: Egy osztály metódusa, úgynevezett tagfüggvény, amely akkor hivódik meg ha létrejön az objektum. Fontos hogy a neve azonos kell legyen az osztályéval, nem hivható meg közvetlenül, és nem tartalmazhat visszatérési értéket
+</para> 
+
+<para>
+Destruktor: A konstruktorhoz hasonlóan ez is egy tagfüggvény, akkor hivódik meg, ha az objektum megszűnik. A neve azonos az osztályéval, de előtte egy ~-nek kell szerepelnie. Használati szabályai azonosak a konsruktorral
+</para> 
+<para>
+Hogy ezt meg tudjuk valósitani, szükségün lesz egy BinFa osztályra, amit jelen esetben BinTreenek fogunk hivni. Ebben az osztályban használni fogunk még egy osztályt, ami a csomópontok használatában fog segiteni, ezt Node-nak nevezzük el.
+</para>       
+     
+<programlisting language="c"><![CDATA[ #include <iostream>
+
+template <typename ValueType>
+class BinTree {
+
+protected:
+    class Node {
+        
+    private:
+        ValueType value;
+        Node *left;
+        Node *right;
+        int count{0};
+        
+        // TODO rule of five
+        Node(const Node &);
+        Node & operator=(const Node &);
+        Node(Node &&);
+        Node & operator=(Node &&);
+        
+    public:
+        Node(ValueType value): value(value), left(nullptr), right(nullptr) {}
+        ValueType getValue(){return value;}
+        Node * leftChild(){return left;}
+        Node * rightChild(){return right;}
+        void leftChild(Node * node){left = node;}
+        void rightChild(Node * node){right = node;}
+        int getCount(){return count;}
+        void incCount(){++count;}        
+    };
+
+}]]></programlisting> 
+          
+<para>
+A Node osztályban a value értékben lesz eltárolva az érték amivel dolgozni szeretnénk, utánna pedig 2 mutatót is deklarálunk, ami a két lehetséges utódra mutat, végül pedig egy integer változót, amivel számolni fogunk. A következő sorokban tiltjuk a másoló/mozgató konstruktor és másoló értékadást.
+</para> 
+<para>
+Publicban található meg a konstruktor, ahol értéket adunk az előbb bevezetett változóknak, a value változó megkapja az értéket, a pointerek, mivel kezedtben nincs utódjuk, nem mutatnak semmire. Ezek után létrehozunk alprogramokat, az első 3 egyszerű érték visszaadás, az utánnuk következő kettővel a pointert tudjuk majd állitani, a getCount visszaadja a count értékét, az incCount pedig a count értékét növeli. Most, hogy készen vagyunk a Node osztállyal, következhet a BinTree osztály befejezése.
+</para>  
+<programlisting language="c"><![CDATA[ 
+
+ Node *root;
+    Node *treep;    
+    int depth{0};
+    
+private:     
+    // TODO rule of five
+    
+public:
+    BinTree(Node *root = nullptr, Node *treep = nullptr): root(root), treep(treep) {
+        std::cout << "BT konstruktor" << std::endl;        
+    }
+    
+    BinTree(const BinTree & old) {
+        std::cout << "BT masolo konstruktor" << std::endl;
+        
+        root = cp(old.root, old.treep);
+        
+    }
+    
+    Node * cp(Node *node, Node *treep) 
+    {
+        Node * newNode = nullptr;
+        
+        if(node)
+        {
+            newNode = new Node(node->getValue());
+            
+            newNode->leftChild(cp(node->leftChild(), treep));            
+            newNode->rightChild(cp(node->rightChild(), treep));
+            
+            if(node == treep)
+                this->treep = newNode;
+        }
+        
+        return newNode;
+    }
+    
+    
+    BinTree & operator=(const BinTree & old) {
+        std::cout << "BT masolo ertekadas" << std::endl;
+        
+        BinTree tmp{old};
+        std::swap(*this, tmp);
+        return *this;
+    }
+    
+    BinTree(BinTree && old) {
+        std::cout << "BT mozgato konstruktor" << std::endl;
+        
+        root = nullptr;
+        *this = std::move(old);
+    }
+       
+    BinTree & operator=(BinTree && old) {
+        std::cout << "BT mozgato ertekadas" << std::endl;
+        
+        std::swap(old.root, root);
+        std::swap(old.treep, treep);
+        
+        return *this;
+    }
+    
+    ~BinTree(){
+        std::cout << "BT destruktor" << std::endl;
+        deltree(root);
+    }
+    BinTree & operator<<(ValueType value);
+    void print(){print(root, std::cout);}
+    void print(Node *node, std::ostream & os);
+    void deltree(Node *node); 
+
+};
+
+template <typename ValueType, ValueType vr, ValueType v0>
+class ZLWTree : public BinTree<ValueType> {
+
+public:
+    ZLWTree(): BinTree<ValueType>(new typename BinTree<ValueType>::Node(vr)) {
+        this->treep = this->root;
+    }
+    ZLWTree & operator<<(ValueType value);
+    
+    
+};
+}]]></programlisting>  
+<para>
+Kezdésként készitünk még 2 pointert, egyet a gyökérnek, egyet a fának, és egy integer változóra is szükség lesz, hogy a mélységet is nyomon tudjuk követni. Itt is szükség lesz egy konstruktorra, és hogy nyomon tudjuk követni a dolgokat, egy kiiratás is szerepet kap. Létrehozunk még egy másoló- és mozgató értékadás meg mozgatás konstruktort is. A mozgatást egy swap függvénnyel oldjuk meg, itt meg kell adni a két csomópontot amit cserélnénk. Fontos észrevenni, hogy nem csak a csomópontok cserélődnek, hanem a mutatók is.
+</para>   
+<para>
+A másolás egy kicsit bonyolultabb, itt használjuk majd a Node * cp-t is. Ezzel a kóddal rekurzió segitségével tudjuk létrehozni a fa másolatát. Végezetül a shiftelést definiáljuk, ennek következtében tudunk a main függvényben értéket adni majd a programnak, ami alapján felépül a fa.
+Azonban ezt egy template-ben csináljuk meg.</para>  
+
+<programlisting language="c"><![CDATA[ 
+
+template <typename ValueType>
+BinTree<ValueType> & BinTree<ValueType>::operator<<(ValueType value)
+{
+    if(!treep) {
+       
+        root = treep = new Node(value);
+        
+    } else if (treep->getValue() == value) {
+        
+        treep->incCount();
+        
+    } else if (treep->getValue() > value) {
+        
+        if(!treep->leftChild()) {
+            
+            treep->leftChild(new Node(value));
+            
+        } else {
+            
+            treep = treep->leftChild();
+            *this << value;
+        }
+        
+    } else if (treep->getValue() < value) {
+        
+        if(!treep->rightChild()) {
+            
+            treep->rightChild(new Node(value));
+            
+        } else {
+            
+            treep = treep->rightChild();
+            *this << value;
+        }
+        
+    }
+    
+    treep = root;
+    
+    return *this;
+}
+}]]></programlisting>  
+
+<para>
+A fenti kódban látható a fa felépitése, az alapján amit a fentiekben leirtam. A programban található még egy template ami a fa mélységét számolja ki és kiiratja (bejárja) a fát, de mivel ez csak számolás és kiiratás, erre nem térnék ki külön.
+</para>    
+
+<programlisting language="c"><![CDATA[ template <typename ValueType>
+void BinTree<ValueType>::deltree(Node *node) 
+{
+    if(node)
+    {
+        deltree(node->leftChild());
+        deltree(node->rightChild());
+        
+        delete node;
+    }
+    
+}
+}]]></programlisting>  
+<para>
+Ez a template felelős a fa törléséért, először az utódokat törli, majd végül a helyi gyökeret.
+</para>    
+   <programlisting language="c"><![CDATA[ int main(int argc, char** argv, char ** env)
+{ bts << "alma" << "korte" << "banan" << "korte";
+    
+    bts.print();
+    
+        
+}
+}]]></programlisting> 
+
+<para>
+A main függvényben már semmi dolgunk nincs, csak felhasználni az eddig készitett kódokat. A bts-be shiftelünk szavakat, de mivel a shifteléshez irtunk egy programot, igy a szavakból fát fog késziteni, amit a print utasitással iratunk ki.
+</para>   
+  </section>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+</chapter>   
+         
