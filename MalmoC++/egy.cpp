@@ -70,7 +70,7 @@ int main(int argc, const char **argv)
     } while (!world_state.has_mission_begun);
     cout << endl;
 
-    // main loop:
+
     do {
         agent_host.sendCommand("move 1");
         boost::this_thread::sleep(boost::posix_time::milliseconds(500));
