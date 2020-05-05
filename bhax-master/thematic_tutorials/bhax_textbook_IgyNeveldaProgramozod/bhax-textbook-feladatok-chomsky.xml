@@ -10,14 +10,18 @@
         <para>
             Állapotátmenet gráfjával megadva írd meg ezt a gépet!
         </para>
+
         <para>
-            Megoldás videó:
+            Állapotátmenet gráf:  <link xlink:href=" https://arato.inf.unideb.hu/batfai.norbert/UDPROG/deprecated/Prog1_1.pdf    "> 27.dia   </link>            
         </para>
         <para>
-            Megoldás forrása:                
+           A Turing gép Alan Turing találmánya, ezt az automatikus számolás céljával hozta létre, akkoriban ugyanis még nem voltak számológépek.
+		   
         </para>
-        <para>
-            Tanulságok, tapasztalatok, magyarázat...
+		        <para>
+Működése rétegelt: Minden időben van egy helyzete a memóriaszalagon, van aktuális állapota amit programozással adunk meg.
+A gép lépésenként olvas egy szimbólumot, majd adott feltételek segitségével választ 3 lehetőség közül: Beirja a szimbólumot, Poziciót vált vagy Stop állapotba lép. Igy működik a decimálisból unárisba váltó gép is.
+Egy unáris számot úgy épitünk fel, hogy annyi vonalat (1-es számjegy) húzunk, ahányszor a számból levonható 1. Ha vissza szeretnénk kapni a decimális számot, ezt az algoritmus kell elvégeznünk visszafelé.
         </para>
     </section>        
         
@@ -27,13 +31,14 @@
             Mutass be legalább két környezetfüggő generatív grammatikát, amely ezt a nyelvet generálja!
         </para>
         <para>
-            Megoldás videó:
+          
         </para>
         <para>
-            Megoldás forrása:                
+                        Forrás:  <link xlink:href=" https://arato.inf.unideb.hu/batfai.norbert/UDPROG/deprecated/Prog1_1.pdf    "> 30.-32.dia   </link>                
         </para>
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            Ez egy generativ nyelv. Ennek a nyelvnek alapja a terminális jel/szimbólum. A környezetfüggetlen nyelvtan, olyan nyelvtan, amelyben változzokból helyettési szabályok sorozatával konstansokból álló mondatokat kapunk.
+			A fent emlitett nyelv környezetfüggő
         </para>
     </section>        
                 
