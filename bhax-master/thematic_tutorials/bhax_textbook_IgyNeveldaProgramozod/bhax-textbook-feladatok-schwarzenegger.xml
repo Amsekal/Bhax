@@ -17,8 +17,80 @@
             Megoldás forrása: <link xlink:href="https://github.com/tensorflow/tensorflow/releases/tag/v0.9.0">https://github.com/tensorflow/tensorflow/releases/tag/v0.9.0</link> (/tensorflow-0.9.0/tensorflow/examples/tutorials/mnist/), <link xlink:href="https://progpater.blog.hu/2016/11/13/hello_samu_a_tensorflow-bol">https://progpater.blog.hu/2016/11/13/hello_samu_a_tensorflow-bol</link>  
         </para>
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            A feladat megoldásához használom a tensorflow nevű alkalmazást. Ennek az aplikációnak a használatát megtalálhatjuk az alkalmazás weboldalán.
+			Amit tudni kell a tensorflowról:
         </para>
+		        <para>Ez egy open source platform, amely a gépi tanulás világába kalauzolja el a programozót.
+        </para>
+		 <para>Ezen a platformon rengeteg eszköz áll rendelkezésünkre, hogy megértsük a gépi tanulást, és érdekes projekteket tudjunk létrehozni.
+		 
+</para>
+ <para>Felhő alapú
+</para>
+ <para>Most, hogy ezeket tisztáztuk, térjünk rá, hogy mit is csinál a programunk
+</para>
+<programlisting language="c++">
+<![CDATA[
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+x_train, x_test = x_train / 255.0, x_test / 255.0
+
+model = tf.keras.models.Sequential([
+  tf.keras.layers.Flatten(input_shape=(28, 28)),
+  tf.keras.layers.Dense(128, activation='relu'),
+  tf.keras.layers.Dropout(0.2),
+  tf.keras.layers.Dense(10)
+])
+
+]]>
+        </programlisting>
+		 <para>A megfelelő könyvtárak importálása után az adatokat  teszt adaszerkezetekbe töltjük fel. Külön töltjök be a traint és külön a testet. Ezek után jöhet is a neurális háló elkészitése, ennek segitségével tanitjukfel az adatokat.
+		 A tensorflow itt is sok segitséget nyújt, jelen esetben a beépitett modelleket használjuk fel. Itt adjuk meg az input méretét, ami jelen esetben 28x28. Látható még a köztes réteg megadása is, amit pár neuron eltávolitása követ, ezzel elkerülve a túlillesztést.
+		 Végül megadjuk a kimenetet is, és hogy ez hány elemű lesz.
+</para>
+<programlisting language="c++">
+<![CDATA[
+
+predictions = model(x_train[:1]).numpy()
+predictions
+
+tf.nn.softmax(predictions).numpy()
+
+loss_fn = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True)
+
+loss_fn(y_train[:1], predictions).numpy()
+
+
+]]>
+        </programlisting>
+		
+<para> Predikciókra is szükségünk lesz, ezeket a train adatbázison kell használnunk. Ezek a predikciók fognak a neurális háló kimeneteként szolgálni.
+A softmax ezek átkonvertálására szolgál, igy lesznek osztályok. A loss függvényt is létrehozzuk, ebben is segit a tensorflow. Ez a függvény a neurális háló kimenete alapján fog működni.
+</para>
+
+<programlisting language="c++">
+<![CDATA[
+
+model.compile(optimizer='adam',
+              loss=loss_fn,
+              metrics=['accuracy'])
+
+model.fit(x_train, y_train, epochs=5)
+
+model.evaluate(x_test,  y_test, verbose=2)
+
+probability_model = tf.keras.Sequential([
+  model,
+  tf.keras.layers.Softmax()
+])
+
+probability_model(x_test[:5])
+
+
+]]>
+        </programlisting>
+		 <para>Végül létrehozzuk a modelleket, a compile segitségével. Ezt a loss és az optimizer paraméterezi, és egy metrikát is alkalmazunk.
+		 A tanitás elinditását a model.fit-el tudjuk elinditani, itt meg kell adnunk hogy hány epochost fusson a tanitás, ezek utánmár futtathatjuk is a programot.
+Minél nagyobb az epochost annál több ideig tart a tanulás, de annál pontosabb is lesz a végeredmény.</para>
     </section>        
 
 <!--
