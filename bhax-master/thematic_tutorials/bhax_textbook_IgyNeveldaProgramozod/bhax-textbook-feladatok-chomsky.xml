@@ -12,7 +12,19 @@
         </para>
 
         <para>
-            Állapotátmenet gráf:  <link xlink:href=" https://arato.inf.unideb.hu/batfai.norbert/UDPROG/deprecated/Prog1_1.pdf    "> 27.dia   </link>            
+            Állapotátmenet gráf:  <link xlink:href=" https://arato.inf.unideb.hu/batfai.norbert/UDPROG/deprecated/Prog1_1.pdf    "> 27.dia   </link> 
+<figure>
+            <title>A Turing gép működése</title>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="img/turing.png"/>
+                </imageobject>
+                <textobject>
+                    <phrase></phrase>
+                </textobject>
+            </mediaobject>
+        </figure>         
+           
         </para>
         <para>
            A Turing gép Alan Turing találmánya, ezt az automatikus számolás céljával hozta létre, akkoriban ugyanis még nem voltak számológépek.
@@ -20,9 +32,35 @@
         </para>
 		        <para>
 Működése rétegelt: Minden időben van egy helyzete a memóriaszalagon, van aktuális állapota amit programozással adunk meg.
-A gép lépésenként olvas egy szimbólumot, majd adott feltételek segitségével választ 3 lehetőség közül: Beirja a szimbólumot, Poziciót vált vagy Stop állapotba lép. Igy működik a decimálisból unárisba váltó gép is.
+A gép lépésenként olvas egy szimbólumot, majd adott feltételek segitségével választ 3 lehetőség közül: Beirja a szimbólumot, Poziciót vált vagy Stop állapotba lép. Igy működik a decimálisból unárisba váltó gép is.</para>  
+<para>
 Egy unáris számot úgy épitünk fel, hogy annyi vonalat (1-es számjegy) húzunk, ahányszor a számból levonható 1. Ha vissza szeretnénk kapni a decimális számot, ezt az algoritmus kell elvégeznünk visszafelé.
-        </para>
+        </para><para>A Decimális számrendzser a már mindenki által jól ismert és használt számrendszer, ahol 10 számjegy van, ezekből épülnek fel a számok. Ezek a számjegyek:0,1,2,3,4,5,6,7,8,9.
+</para>   
+<para>Az Unáris számrendszer is egy ismert és használt számrendszer, csak név szerint sokan nem ismerik. Ez egy olyan számrendszer, ahol csak egy számjegyünk van: az egyes. Ezt szokták vonalakkal is jelölni. A vonalak száma jelzi a szám értékét. A gyerekek amikor az ujjukat használják számolásra, akkor unáris számrendszert használnak.
+</para>   
+<para>Például, ha a képen látható 10-es számot szeretnénk unárisba átalakitani, ez lenne a menete: a szám beolvasása után a program elér az egyelnőségjelhez, ami azt jelzi, hogy állapotváltás fog következni, ezért visszalép. A tizesek helyén szereplő 1-est 0-ra cseréli, mig az egyesek helyén elhelyezkedő 0-ást egy kilencsere, igy a decimális számunk jelenleg 09, ami 9. A lépés végetért visszatérünk az egyenlőségjel elé, és mivel elvégeztünk egy minusz egyes állapotváltást, az unáris számunk értéke is növekszik. Mivel eddig egyetlen darab 1-es számjegy sem szereplet az unáris számban, ez lesz az első, az unáris számunk jelen pillanatban: 1 Ezek után a fentebb leirtak alapján működik a program.
+</para>  
+<para>Következő lépés: Decimális szám: 8, Unáris szám: 11
+</para> 
+<para>Következő lépés: Decimális szám: 7, Unáris szám: 111
+</para>
+<para>Következő lépés: Decimális szám: 6, Unáris szám: 1111
+</para>
+<para>Következő lépés: Decimális szám: 5, Unáris szám: 11111
+</para>
+<para>Következő lépés: Decimális szám: 4, Unáris szám: 111111
+</para>
+<para>Következő lépés: Decimális szám: 3, Unáris szám: 1111111
+</para>
+<para>Következő lépés: Decimális szám: 2, Unáris szám: 11111111
+</para>
+<para>Következő lépés: Decimális szám: 1, Unáris szám: 111111111
+</para>
+<para>Következő lépés: Decimális szám: 0, Unáris szám: 1111111111
+</para> 
+<para>Abban a pillanatban, ahogy lenulláztuk a megadott decimális számot, megkapjuk unárisban.
+</para>
     </section>        
         
     <section>
@@ -40,6 +78,64 @@ Egy unáris számot úgy épitünk fel, hogy annyi vonalat (1-es számjegy) húz
             Ez egy generativ nyelv. Ennek a nyelvnek alapja a terminális jel/szimbólum. A környezetfüggetlen nyelvtan, olyan nyelvtan, amelyben változzokból helyettési szabályok sorozatával konstansokból álló mondatokat kapunk.
 			A fent emlitett nyelv környezetfüggő
         </para>
+<para>1. környezetfüggő generativ gramatika
+</para> 
+  <para>Első sorban szükségünk lesz a nyelv megalkotásához, nyelvi konstansokra és változókra.
+</para>  
+<programlisting language="c"><![CDATA[ A,B,C változók
+a,b,c konstansok
+]]></programlisting> <para>Szükségünk lesz még levezetési szabályokra is, amelyeknek köszönhetően eljutunk a kivánt alakhoz.
+</para>    
+
+<programlisting language="c"><![CDATA[ A - abc, A - aBbc, Bb - bB, Bc - Cbcc, bC - Cb, aC - aaB, aC - aa
+]]></programlisting> 
+
+<para>
+Vegyük az A változót, célunk, hogy úgy alakitsuk, hogy a kivánt alakhoz hasonló alakot vegyen fel.
+</para>  
+<programlisting language="c"><![CDATA[ A (A - aBbc) // A helyett aBbc-t fogunk irni
+aBbc (Bb - bB)
+abBc (Bc - Cbcc)
+abCbcc (bC - Cb)
+aCbbcc (aC - aa)
+aabbcc 
+]]></programlisting> 
+
+<para>Az utolsó sorban megtekinthető a végleges alak, ami a<superscript>n</superscript>b<superscript>n</superscript>c<superscript>n</superscript> formában van.
+</para>  
+
+
+
+<para>2. környezetfüggő generativ gramatika</para> 
+
+  <para>Első sorban szükségünk lesz a nyelv megalkotásához, nyelvi konstansokra és változókra.
+</para>  
+<programlisting language="c"><![CDATA[ A,B,C változók
+a,b,c konstansok
+]]></programlisting> <para>Szükségünk lesz még levezetési szabályokra is, amelyeknek köszönhetően eljutunk a kivánt alakhoz.
+</para>    
+
+<programlisting language="c"><![CDATA[A - aAB, A - aC, CB - bCc, cB - Bc, C - bc
+]]></programlisting> 
+
+<para>
+Vegyük az A változót, célunk, hogy úgy alakitsuk, hogy a kivánt alakhoz hasonló alakot vegyen fel.
+</para>  
+<programlisting language="c"><![CDATA[ A (A - aAB)
+aAB (A - aC)
+aaCB (CB - bCc)
+aabCc (C - bc)
+aabbcc
+
+]]></programlisting> 
+
+<para>Az utolsó sorban megtekinthető a végleges alak, ami a<superscript>n</superscript>b<superscript>n</superscript>c<superscript>n</superscript> formában van.
+</para>  
+
+<para>A két nyelv leirása és a szabályok megtalálhatóak <link xlink:href="Chomsky/Chomsky2.txt">
+                <filename>itt</filename>
+            </link>  
+</para>  
     </section>        
                 
     <section>
@@ -55,8 +151,10 @@ Egy unáris számot úgy épitünk fel, hogy annyi vonalat (1-es számjegy) húz
         <para>
             Megoldás forrása:<link xlink:href="Chomsky/hivatkozas.c">
                 <filename>bhax/thematic_tutorials/bhax_textbook_IgyNeveldaProgramozod/Chomsky/hivatkozas.c</filename>
-            </link>   
-        </para>
+            </link>  
+
+        </para>        <para>Tutoráltam: Deák Rúben
+        </para> 
         <para>
             Először irok egy for ciklust.</para>
 <programlisting language="c"><![CDATA[%{
@@ -528,9 +626,20 @@ main ()
 }
 ]]></programlisting>            
         <para>
-            Tanulságok, tapasztalatok, magyarázat...
+            A feladat megoldása alatt rengeteg dolgot tudtam meg és tanultam. Ilyen például a mutatók használata.</para><para> Mint kiderült a mutatókat rengeteg féle képpen lehet használni, a lehetőségek határtalanok. Az embernek viszont rengetek időbe kerül megfejteni hogy mit is akar a kódrészlet, ha több mutató is szerepel benne, legalábbis magamon azt vettem észre, hogy minél több mutató van és minél öszetetteb dolgokra mutatnak, annál nehezebb rájönni, pontosan mit is lehet vele elérni.</para><para> A mutatók használata rengeteg előnnyel jár,viszont ha túl bonyolult helyeken akarjuk őket használni, nem biztos, hogy átláthtó és megérthető lesz a programunk.
         </para>
     </section>                     
+   <section>          
+    <title>Minecraft MALMÖ - Csiga diszkrét</title>
+
+    <para>Forrás link: <link xlink:href="https://github.com/Amsekal/Bhax/blob/master/diszkretcsiga.py">
+                <filename>Github link</filename>    </link>
+    </para>
+    <para>
+A feladatban az a célünk, hogy megoldjuk, hogy a minecraft karakterünk csigaszerű mozgással haladjon egyre feljebb az arénában, addig amig nem találkozik a lávával, ami után értelem szerűen meghal, hasonlóan az első MALMÖs feladathoz. Itt azonban diszkrét mozgási parancsokat használunk, számoljuk a karakterünk lépéseit, és az alapján döntünk a következő mozdulatról.
+    </para>
+   </section>   
 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 </chapter>                
+

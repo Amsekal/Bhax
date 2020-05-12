@@ -14,7 +14,7 @@
         </para>
         <para>
             Megoldás videó: <link xlink:href="https://youtu.be/1MRTuKwRsB0">https://youtu.be/1MRTuKwRsB0</link>,
-            <link xlink:href="https://youtu.be/RKbX5-EWpzA">https://youtu.be/RKbX5-EWpzA</link>.
+            <link xlink:href="https://youtu.be/RKbX5-EWpzA">https://youtu.be/RKbX5-EWpzA</link> Illetve <link xlink:href="https://youtu.be/mderKzd9gx8">https://youtu.be/mderKzd9gx8</link>.
         </para>
         <para>
             Megoldás forrása: <link xlink:href="Caesar/tm.c">
@@ -384,7 +384,7 @@ Az AND is, hasonlóan az OR-hoz, egészen jó megoldásokat ad vissza, igy az em
             C++
         </para>
         <para>
-            Megoldás videó: <link xlink:href="https://youtu.be/XpBnR31BRJY">https://youtu.be/XpBnR31BRJY</link>
+            Megoldás videó: <link xlink:href="https://youtu.be/XpBnR31BRJY">https://youtu.be/XpBnR31BRJY</link> 
         </para>
         <para>
             Megoldás forrása: <link xlink:href="https://github.com/nbatfai/nahshon/blob/master/ql.hpp#L64">https://github.com/nbatfai/nahshon/blob/master/ql.hpp#L64</link>               
@@ -399,6 +399,15 @@ Az AND is, hasonlóan az OR-hoz, egészen jó megoldásokat ad vissza, igy az em
             Általában a finomhangolást nagyon magas határnál kezdi, majd addig csökkentik, amig elfogadható a hibák mennyisége.
         </para>             
     </section>        
-        
+       <section>          
+    <title>Minecraft MALMÖ - Mit lát Steve?</title>
+
+    <para>Forrás link: <link xlink:href="https://github.com/Amsekal/Bhax/blob/master/lat.py">
+                <filename>Github link</filename>    </link>
+    </para>
+    <para>
+A feladat célja, hogy feldolgozzuk azt az információt, hogy mi van a karakterünk előtt, legyen az föld, levegő, láva, vagy virág, és ezt kiirjuk a képernyőre. Egy 3x3x3-as környezetben vizsgáljuk mindezt.</para>
+   </section>   
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
 </chapter>                
+

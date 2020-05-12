@@ -409,6 +409,18 @@ Ez a template felelős a fa törléséért, először az utódokat törli, majd 
 <para>
 A main függvényben már semmi dolgunk nincs, csak felhasználni az eddig készitett kódokat. A bts-be shiftelünk szavakat, de mivel a shifteléshez irtunk egy programot, igy a szavakból fát fog késziteni, amit a print utasitással iratunk ki.
 </para>   
-  </section>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+  </section>  
+
+
+   <section>          
+    <title>Minecraft MALMÖ -5x5x5 </title>
+
+    <para>Forrás link: <link xlink:href="https://github.com/Amsekal/Bhax/blob/master/5x5.py">
+                <filename>Github link</filename>    </link>
+    </para>
+    <para>
+Hasonlón egy előző feladathoz, itt is Steve látásával fogunk foglalkozni. A feladat egyszerű része megnövelni a látótávolságot, itt csak a számokat kell átirni. A nehézségek akkor kezdődnek, amikor ezeket az információkat kell feldolgozni, de a MALMÖ oldalán találhatunk segitséget.
+    </para>
+   </section>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
 </chapter>   
          

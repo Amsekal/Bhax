@@ -103,7 +103,16 @@ main ()
   return 0;
 }
 ]]>
-        </programlisting>        
+        </programlisting>   
+        <figure>
+            <title>100 százalékos magok</title>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="img/cpu.png" scale="20" />
+                </imageobject>
+
+            </mediaobject>
+        </figure>      
         <para>
             A <command>gcc infty-f.c -o infty-f -fopenmp</command> parancssorral készítve a futtathatót, majd futtatva,               
             közben egy másik terminálban a <command>top</command> parancsot kiadva tanulmányozzuk, mennyi CPU-t használunk:            
@@ -235,6 +244,44 @@ false]]></screen>
 <filename>bhax/thematic_tutorials/bhax_textbook_IgyNeveldaProgramozod/Turing/csere.cpp</filename>
             </link>  
         </para>
+
+ <programlisting>
+int a,b;
+</programlisting>
+<para>
+Deklarálom a szükséges változókat, a-t és b-t.
+</para>      
+ <programlisting>
+a=2;
+b=3;
+</programlisting>
+<para>
+A két változónak értéket adok.
+</para>      
+ <programlisting>
+a=a+b;
+b=a-b;
+a=a-b;
+</programlisting>
+<para>
+Ebben a részben cserélem fel a változók értékeit a következő képpen:
+</para>  
+<para>
+1. sor: Az a értéke 2+3=5 lesz.
+</para>   
+<para>
+2. sor: A b értéke 5-3=2 lesz.
+</para>   
+<para>
+3. sor: Az a értéke 5-2=3 lesz.
+</para>       
+<programlisting language="c"><![CDATA[ 
+printf("a= %d\nb= %d\n",a,b);
+]]></programlisting>
+<para>
+Itt pedig kiirom a felcserélt értékeket.
+</para>  <para> Több megoldás is létezik 2 változó felcserélésére, ezért bemutatok egy másik megoldást is, ezt már C++ nyelven megirva.
+</para>         
         <para>
             <programlisting>int a,b;
 cin>>a;
@@ -342,6 +389,8 @@ Például ha a=2 és b=3, akkor:</para>
                     <imagedata fileref="img/Shift.png" scale="50" />
                 </imageobject>
 </mediaobject>
+<para>A képen nem látható a db eredménye, ami az én esetemben 64 volt. Ez a szám jelzi, hogy hány bites operációs rendszert használunk.
+</para>      
     </section>                     
 
     <section>
@@ -731,5 +780,17 @@ plot(x,y,type="b")]]>
             </itemizedlist>                
         </tip>
     </section>
+
+<section>          
+    <title>Minecraft MALMÖ - </title>
+
+    <para>Forrás link: <link xlink:href="https://github.com/Amsekal/Bhax/blob/master/csigakor.py">
+                <filename>Github link</filename>    </link>
+    </para>
+    <para>
+A feladatban az a célünk, hogy megoldjuk, hogy a minecraft karakterünk csigaszerű mozgással haladjon egyre feljebb az arénában, addig amig nem találkozik a lávával, ami után értelem szerűen meghal. Ha fallal találkozik, akkor felugrik rá és elfordul, igy halad az arénában.
+    </para>
+   </section>   
+
 
 </chapter>                

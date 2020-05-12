@@ -307,5 +307,15 @@ A feladat itt is ugyan az, mint amit az előbb láthattunk, annyi különbségge
 Azonban ez a program többre is képes, mint amit az előbb létrehoztunk. Nem csak kirajzolja azt amire ránagyitunk, de képes pillanatképet is késziteni arról, ezt a kódrészt a public void pillanatfelvétel() alatt találhatjuk meg. A programrész nem olyan bonyolult, lényegében kimenti a jelenleg aktiv ablakot, és elnevezi. Ezt az elnevezést segiti egy számláló is, igy ha több képet akarunk csinálni, az egyik nem fof rámentődni a másikra a néveggyezés miatt.
 </para>
     </section>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+       
+   <section>          
+    <title>Minecraft MALMÖ -Láváig </title>
+
+    <para>Forrás link: <link xlink:href="https://github.com/Amsekal/Bhax/blob/master/lavatlat.py">
+                <filename>Github link</filename>    </link>
+    </para>
+    <para>
+A feladat célja, hogy Steve felfele haladjon az arénában addig, amig nem lát lávát. Ha ez megtörténik akkor pedig fusson vissza. Ez egyszerűen megoldható egy while ciklussal, amit akkor szakitunk meg, amikor a látókörünkbe láva kerül.
+    </para>
+   </section>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
 </chapter>                
