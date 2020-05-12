@@ -1,0 +1,28 @@
+
+A,B,C valtozok
+a,b,c konstansok
+
+A - abc, A - aBbc, Bb - bB, Bc - Cbcc, bC - Cb, aC - aaB, aC - aa
+
+
+A (A - aBbc)
+aBbc (Bb - bB)
+abBc (Bc - Cbcc)
+abCbcc (bC - Cb)
+aCbbcc (aC - aa)
+aabbcc 
+
+----
+
+A,B,C valtozok
+a,b,c konstansok
+
+A - aAB, A - aC, CB - bCc, cB - Bc, C - bc
+
+A (A - aAB)
+aAB (A - aC)
+aaCB (CB - bCc)
+aabCc (C - bc)
+aabbcc
+
+
