@@ -1,0 +1,71 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Gutenberg!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+        <cover>
+            <para>
+                Programozás tankönyvek rövid olvasónaplói.
+            </para>
+        </cover>
+    </info>
+    <section>
+        <title>Programozási alapfogalmak</title>
+        <para>         
+            <citation>PICI</citation>       
+        </para>
+<para>         
+      A programozási nyelveket 3 részre oszthatjuk: assembly, gépi és magas szintú nyelv, amivel forrásszöveget irhatunk. A forrásszövegből a gép által is értelmezhető kódot forditóprogramok segitségével érhetünk el. A froditóprogram lépései: lexikális, szintaktikai, szemantikai elemzés, kódgenerálás. Minden programnyelv rendelkezik jól megahtározott szabvánnyal melyben megtalálhatóak a nyelv szabályai. Az implementációk inkompatibilitását a hordozhatóság problémájának nevezzük, ez még a mai napig vár egy teljes megoldásra. A programnyelvek lehetnek: imperativ, deklarativ, egyéb nyelvek.
+Imperativ nyelvek:algoritmusokat használak. Deklarativ nyelvek: nem használ algoritmusokat, pl logikai nyelv. Más nyelvek: nincs jellemzőjük.
+        </para>
+    </section>        
+    <section>
+        <title>Programozás bevezetés</title>
+        <para>                
+            <citation>KERNIGHANRITCHIE</citation>
+        </para>
+        <para>
+            Megoldás videó: <link xlink:href="https://youtu.be/zmfT9miB-jY">https://youtu.be/zmfT9miB-jY</link>
+        </para>   
+<para>         
+      Alapismeretek
+        </para>    
+<para>         
+A könyv első fejezetében a C nyelv alapjaival ismerkedhetünk meg. Egyszerű feladatok segitségével ismerjük meg a nyelv szematikáját, szabványát, a változók használatát és bemutatásra kerülnek az ismétlő ciklusok is.  Ezen felül foglalkozunk még alapvető függvényekkel és pár napi szinten használt eljárással.    
+        </para> 
+<para>         
+      Tipusok, operátorok, kifejezések
+        </para>
+<para>         
+Ahogy a fejezet ciméből is kiderül, a változók tipusaival, elnevezési szabályaival és felhasználásával találkozunk. Megtudjuk a pi és az Euler féle szám értékét és megtanulunk mi is ezekhez hasonló állandót létrehozni. Találkozunk a logikai és matematikai operátorokkal, és ezek felhasználásával, de a bitenkénti logikai operátorok sem maradnak ki.     
+        </para>
+    </section>        
+    <section>
+        <title>Programozás</title>
+        <para>                
+            <citation>BMECPP</citation>
+        </para>
+<para>         
+      Az első fejezet betekintést enged nyerni a c++ történelmébe.
+        </para>
+<para>         
+      A második fejezet már több információval szolgál programozás terén, bemutatja a c++ nyelvet és az alapvető különbésgeket közte és a C között. Megimserkedünk a main függvénnyel, és olyan dolgokkal, amik C-ben nincsenek: bool adattipus, stb. Kitér az új nyelvi szabályokra is, ami c után egy kicsit furcsa lehet, például struct helyett class-t használunk, de rengeteg módositás történt.
+        </para>
+    </section>   
+ <section>
+        <title>Programozás, Python</title>  
+<para>         
+      Python nyelv bemutatása
+        </para> 
+<para>         
+      A Python egy, a többi nyelvhez képest gyors fejlesztési sebességgel rendelkező nyelv, rengeteg támogatot eszközzel rendelkezik, ezen felül egy általános célú programozási nyelv
+        </para>
+<para>         
+      Python
+        </para>
+<para>         
+      Pythonban nem található meg a jól ismert begi, end, de még a pontos vessző sem. Nem szükséges változókat deklarálni, azok bármikor használhatóak, igy elmondható, hogy az egyik leg kezdőbarátab prog. nyelv. A nyelv rendkivül különleges szemantikával és szabályrendszerrel rendelkezik, főleg ha az ember C vagy C++-ról tér át.
+        </para>
+ </section>     
+</chapter>                
