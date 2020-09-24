@@ -7,6 +7,12 @@
     </info>
 
     <section>
+        <title>Olvasónapló</title>
+    	     <para>
+                        Forrás:  <link xlink:href="https://github.com/Amsekal/Bhax/blob/master/bhax-master/thematic_tutorials/bhax_textbook_IgyNeveldaProgramozod/olvasonaplo.txt"> Olvasónapló  </link>                
+        </para>
+    </section> 
+    <section>
         <title>A BPP algoritmus Java megvalósítása</title>
         <para>
         </para>
