@@ -13,35 +13,271 @@
         </para>
     </section> 
     <section>
-        <title>A BPP algoritmus Java megvalósítása</title>
-        <para>
+        <title>OO szemlélet </title>
+          <para>
         </para>
         <para>
-            Megoldás videó:
+          A módosított polártranszformációs normális generátor beprogramozása Java nyelven. Mutassunk rá, hogy a mi természetes saját megoldásunk (az algoritmus egyszerre két normálist állít elő, kell egy példánytag, amely a nem visszaadottat tárolja és egy logikai tag, hogy van-e tárolt vagy futtatni kell az algot.) és az OpenJDK, Oracle JDK-ban a Sun által adott OO szervezés ua.!
         </para>
         <para>
-            Megoldás forrása:                
+          A módosított polártranszformációs normális generátor segítségével képesek vagyunk legenerálni 2 normálist, az egyiket a program elmenti és egy logikai változó használatával jelzi, hogy rendelkezik e elmentett számmal.
         </para>
-        <para>
-            Tanulságok, tapasztalatok, magyarázat...
+      <para>
+        A Java kód:
+      </para>
+      <para>
+        <programlisting language="Java">
+          <![CDATA[
+                public class PolárGenerátor {
+                
+                boolean nincsTárolt = true;
+                double tárolt;
+                
+                public PolárGenerátor() {
+                    
+                    nincsTárolt = true;
+                    
+                }
+                
+                public double következő() {
+                    
+                    if(nincsTárolt) {
+                        
+                        double u1, u2, v1, v2, w;
+                        do {
+                            u1 = Math.random();
+                            u2 = Math.random();
+                            
+                            v1 = 2*u1 - 1;
+                            v2 = 2*u2 - 1;
+                            
+                            w = v1*v1 + v2*v2;
+                            
+                        } while(w > 1);
+                        
+                        double r = Math.sqrt((-2*Math.log(w))/w);
+                        
+                        tárolt = r*v2;
+                        nincsTárolt = !nincsTárolt;
+                        
+                        return r*v1;
+                        
+                    } else {
+                        nincsTárolt = !nincsTárolt;
+                        return tárolt;
+                    }
+                }
+                            ]]>
+              </programlisting>
+      </para>
+      <para>Ahogy a kódban is látható, egy osztályt hozunk létre a generátor számára, ezt PolárGenerátornak nevezzük el.
+      Deklaráljuk a fentebb említett logikai változót is, nincsTárolt néven. A tárolt változóban lesz eltárolva a legenerált normális.
+      A következő függvény, aminek neve egyezik az osztály nevével, egy konstruktor lesz, amikor egy egyedet előállítunk, a logikai változót igazra állítjuk, mert mlg nicns semmi eltárolva.
+      Ezek után következik a számolás: ha nics tárolt szám, akkor végrehajtódnak a matematikai  műveletek, eltároljuk a polártranszformáció eredményét.
+      Ha már volt tárolt szám, akkor annak az értékét adjuk vissza.
+      </para>
+        <programlisting language="Java">
+          <![CDATA[
+                public static void main(String[] args) {
+                    
+                    PolárGenerátor g = new PolárGenerátor();
+                    
+                    for(int i=0; i<10; ++i)
+                        System.out.println(g.következő());
+                    
+                }
+                
+            }
+            ]]>
+        </programlisting>
+      <para>
+        Ezek után már csak meg kell hívnunk a függvényeket, és működik is a programunk.
         </para>
-    </section>        
+      <para>
+        A C++ kód a 6. fejezet 1. feladatában tekinthető meg.
+      </para>
+      </section>        
 
     <section>
-        <title>Java osztályok a Pi-ben</title>
+        <title>Gagyi</title>
         <para>
-            Az előző feladat kódját fejleszd tovább: vizsgáld, hogy Vannak-e Java osztályok a Pi hexadecimális kifejtésében!
+          Az ismert formális3  <![CDATA[while (x <= t && x >= t && t != x);]]>  tesztkérdéstípusra adj a szokásosnál (miszerint x, t az egyik esetben az objektum által hordozott érték, a másikban meg az objektum referenciája) „mélyebb” választ, írj Java példaprogramot mely egyszer végtelen ciklus, más x, t értékekkel meg nem! A példát építsd a JDK Integer.java forrására4, hogy a 128-nál inkluzív objektum példányokat poolozza!
+
         </para>
         <para>
-            Megoldás videó:
+            Hogy pontosan megértsük, miért is fordul elő ez a jelenség, először szemügyre kell vennünk, hogy a Java hogyan is dolgozik az integerekkel.
+            Ezt a dokumentáció alapján tehetjük meg.
         </para>
+      <programlisting language="xml">
+        <![CDATA[
+        public static Integer valueOf(int i)
+
+        Returns an Integer instance representing the specified int value. If a new Integer instance is not required, this method should generally be used in preference to the constructor Integer(int), as this method is likely to yield significantly better space and time performance by caching frequently requested values. This method will always cache values in the range -128 to 127, inclusive, and may cache other values outside of this range.
+
+        Parameters:
+            i - an int value.
+        Returns:
+            an Integer instance representing i.
+        Since:
+            1.5
+        ]]>
+      </programlisting>
+
+      <para>
+              Ahogyan a fenti dokumentációban láthatjuk a Java ebben az esetben a gyorsaságot fontosnak találja, igy egy gyorsítótárba elmetni a -128,127 zárt intervallumban található számokat.
+              Ezt azért teszi, mert azt feltételezi, hogy ezek a számok gyakran fognak előfordulni a legtöbb kódban.
+              Tehát, ha ebből az intervallumból választunk egy számot, akkor az értéket a gyorsitótárból választja ki a Java.
+        </para>
+      <programlisting language="Java">
+        <![CDATA[
+[while (x <= t && x >= t && t != x)
+System.out.println("Belepett");
+            ]]>
+      </programlisting>
         <para>
-            Megoldás forrása:                
+            Vegyük példának a fenti kódrészletet. Ha a fentiekben emlitett intervallumból veszünk azonosértéket x-nek és t-nek, nem lép be a while ciklusba, mivel a harmadik feltétel nem teljesül.
+          A két változó ugyanarra az objektumra hivatkozik, de ha nem az intervallumból vesszük a számokat, akkor ez nem történik meg.  
         </para>
-        <para>
-            Tanulságok, tapasztalatok, magyarázat...
-        </para>
-    </section>        
-        
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+    </section>
+
+
+  <section>
+    <title>Yoda</title>
+    <para>
+      Írjunk olyan Java programot, ami java.lang.NullPointerEx-el leáll, ha nem követjük a Yoda conditions-t! https://en.wikipedia.org/wiki/Yoda_conditions
+    </para>
+
+    <para>
+      Yodát szerintem senkinem sem szükséges bemutatni. A kis zöld lény ikonikussá vált a "Csillagok Háborúja" filmeknek köszönhetően. Ami viszotn teljesen egyedivé teszi, az a fura beszédmódja, ugyanis az igéket a szavak végére teszi.
+      Ezt használták alapnak a programozók, amikor létrehozták a Yoda conditions programozási sémát: a feltételeket forditva irjuk fel, például if(osszeg == 10) helyett, if(10==osszeg) fog szerepelni a kódunkban. Ez egy haszontalan ötletnek tűnik, de néha képes csodákra.
+    </para> <programlisting language="Java">
+        <![CDATA[
+String myString = null;
+if (myString.equals("foobar")) { 
+System.out.println("Yoda");
+}
+            ]]>
+      </programlisting>
+    <para>
+      Ebben az esetben egy NullPointerExceptiont fog dobni a Java, ugyanis null-hoz nem tud összehasonlítani valamivel.
+    </para>
+
+    <programlisting language="Java">
+        <![CDATA[
+    String myString = null;
+    if ("foobar".equals(myString))
+    { System.out.println("Yoda");}            ]]>
+  </programlisting>
+    <para> Itt egy létező stringet akarunk összehasonlitani egy null értékkel, ami Javában már lehetséges, hiba helyett egy false értéket fogunk kapni az ifben.
+    </para>
+  </section>
+  <section>
+    <title>Kódolás from scratch</title>
+    <para>Induljunk ki ebből a tudományos közleményből: http://crd-legacy.lbl.gov/~dhbailey/dhbpapers/bbpalg.pdf és csak ezt tanulmányozva írjuk meg Java nyelven a BBP algoritmus megvalósítását!
+    Ha megakadsz, de csak végső esetben: https://www.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitokjavat/apbs02.html#pi_jegyei (mert ha csak lemásolod, akkor pont az a fejlesztői élmény marad ki, melyet szeretném, ha átélnél).
+    </para>
+    <para> A feladat megoldásához Bátfai Norbert Tanár úr kódját fogom felhasználni.</para>
+    <para>A megemlitett tudományos szövegben a BBP formulát olvasatunk, ennek segitségével ki tudjuk számolni a Pi értékét.
+      </para>
+    <para>
+      <programlisting language="java">
+        <![CDATA[
+            public class PiBBP {
+
+        String d16PiHexaJegyek;
+
+        public PiBBP(int d) {
+            
+            double d16Pi = 0.0d;
+            
+            double d16S1t = d16Sj(d, 1);
+            double d16S4t = d16Sj(d, 4);
+            double d16S5t = d16Sj(d, 5);
+            double d16S6t = d16Sj(d, 6);
+            
+            d16Pi = 4.0d*d16S1t - 2.0d*d16S4t - d16S5t - d16S6t;
+            
+            d16Pi = d16Pi - StrictMath.floor(d16Pi);
+            
+            StringBuffer sb = new StringBuffer();
+            
+            Character hexaJegyek[] = {'A', 'B', 'C', 'D', 'E', 'F'};
+            
+            while(d16Pi != 0.0d) {
+                
+                int jegy = (int)StrictMath.floor(16.0d*d16Pi);
+                
+                if(jegy<10)
+                    sb.append(jegy);
+                else
+                    sb.append(hexaJegyek[jegy-10]);
+                
+                d16Pi = (16.0d*d16Pi) - StrictMath.floor(16.0d*d16Pi);
+            }
+            
+            d16PiHexaJegyek = sb.toString();
+        }
+            public double d16Sj(int d, int j) {
+            
+            double d16Sj = 0.0d;
+            
+            for(int k=0; k<=d; ++k)
+                d16Sj += (double)n16modk(d-k, 8*k + j) / (double)(8*k + j);
+            
+            return d16Sj - StrictMath.floor(d16Sj);
+        }
+        ]]>
+      </programlisting>
+    </para>
+    <para>
+      A fenti kódrészben létrehozzuk a fő osztályunkat, majd ebben egy stringet készitünk, ebben lesz az eredméy eltárolva. Ezek után következik a formula implementálása. Itt a lényeges érsz az, hogy a PiBBP d paramétere tárolja el a poziciót, ahonnan érdekel majd minket a Pi számjegyei.
+      
+    </para>
+    <para>
+      <programlisting language="java">
+        <![CDATA[
+                public long n16modk(int n, int k) {
+                
+                int t = 1;
+                while(t <= n)
+                    t *= 2;
+                
+                long r = 1;
+                
+                while(true) {
+                    
+                    if(n >= t) {
+                        r = (16*r) % k;
+                        n = n - t;
+                    }
+                    
+                    t = t/2;
+                    
+                    if(t < 1)
+                        break;
+                    
+                    r = (r*r) % k;
+                    
+                }
+                
+                return r;
+            }
+            public String toString() {
+                
+                return d16PiHexaJegyek;
+            }
+            public static void main(String args[]) {        
+                System.out.print(new PiBBP(1000000));
+                System.out.println("\n");
+            }
+        }
+        ]]>
+      </programlisting>
+    </para>
+    <para>Ezek után már csak annyi dolgunk maradt, hogy átalakitsuk hexadecimális alakba, majd kiirjuk toString segitségével a számokat. A kód végén egy példányositás látható, itt kapjuk majd meg az eredményt is.
+      </para>
+     
+
+  </section>
+
 </chapter>                
