@@ -1,0 +1,600 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Liskov!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+
+    <section>
+        <title>Liskov helyettesítés sértése</title>
+        <para>
+            Írjunk olyan OO, leforduló Java és C++ kódcsipetet, amely megsérti a Liskov elvet! Mutassunk rá a
+            megoldásra: jobb OO tervezés.
+        </para>
+        <para>
+A Liskov Helyettesitési Elv kimondja, hogy ha A alosztálya B, akkor minden A tipusú objektum helyettesithető B tipusú objektummal, úgy, hogy a program működése és tulajdonságai azonosak maradnak.
+        </para>
+        <para>
+           Ahhoz, hogy ezt az elvet megsértsük, egy olyan alosztályra van szükségünk, ami nem rendelkezik a főosztály egyik, vagy akár több funkciójával. Ilyen példa lehet a kacsacsőrű emlős és a többi emlős szaporodása, mert mig a kacsacsőrű emlős tojást rak, a többi emlős állat eleven utódokat hoz létre, vagy egy egyszerűbb példa, a Pingvin, a röpképtelen madár és a többi madár akik képesek repülni. Én az utóbbi példát fogom felhasználni. A kódhoz Bátfai Norbert tanárúr kódját fogom átirni Java nyelvre.
+        </para>
+        <para>
+            Java kód:
+        </para>
+        <para>
+        <programlisting language="java">
+        <![CDATA[
+
+        class Madar {
+
+             public void repul() { 
+                  
+             };
+        };
+
+        class Program {
+
+             public void fgv ( Madar madar ) {
+                  madar.repul();
+             }
+        };
+
+        class Kacsa extends Madar
+        {
+
+        };
+
+        class Pingvin extends Madar 
+        {};
+
+        class LSP {
+             public static void main (String[] args)
+             {
+                  Program program = new Program();
+                  program.fgv (new Madar() );
+
+                  program.fgv (new Kacsa() );
+
+                  program.fgv (new Pingvin() ); 
+
+             }
+        }
+        ]]>
+        </programlisting>
+        </para>
+        <para>
+A fenti kódcsipetben létrehoztunk egy Madár osztályt, amiben a repul függvény is szerepel. Ha ennek az osztálynak készitek egy alosztályt, akkor abban is szerepelni fog a repul függvény. A Program osztályban az fgv függvény alkalmazza majd a a Madar tipusú objektumokra a repul függvényt. Ezek után létrehozzuk az alosztályokat, majd a Main-ben létrehozzuk az objektumokat, egy Madar egy Kacsa és egy Pingvin tipusú objektumot, amik renfelkezni fognak a repul függvénnyel. Nézzük meg ezt C++ban is. 
+        </para>
+        <para>
+            <programlisting language="java">
+        <![CDATA[
+
+        class Madar {
+        public:
+             virtual void repul() {};
+        };
+
+        class Program {
+        public:
+             void fgv ( Madar &madar ) {
+                  madar.repul();
+             }
+        };
+
+        class Kacsa : public Madar
+        {};
+
+        class Pingvin : public Madar 
+        {};
+
+        int main ( int argc, char **argv )
+        {
+             Program program;
+             Madar madar;
+             program.fgv ( madar );
+
+             Kacsa kacsa;
+             program.fgv ( kacsa );
+
+             Pingvin pingvin;
+             program.fgv ( pingvin ); 
+
+        }
+
+        ]]>
+        </programlisting>
+        </para>
+        <para>
+ Ezek után, nézzük meg, hogyan lehetne elkerülni az elv megsértését:
+        </para>
+        <para>
+        <programlisting language="java">
+        <![CDATA[
+        class Madar {
+        
+        };
+
+
+        class Program {
+        public:
+             void fgv ( Madar &madar ) {
+
+             }
+        };
+
+
+        class RepuloMadar : public Madar {
+        public:
+             virtual void repul() {};
+        };
+
+        class Kacsa : public RepuloMadar
+        {};
+
+        class Pingvin : public Madar 
+        {};
+
+        int main ( int argc, char **argv )
+        {
+             Program program;
+             Madar madar;
+             program.fgv ( madar );
+
+             Kacsa kacsa;
+             program.fgv ( kacsa );
+
+             Pingvin pingvin;
+             program.fgv ( pingvin );
+
+        }
+
+        ]]>
+        </programlisting>
+        </para>
+        <para>
+Úgy orvosoltuk a problémát, hogy a Madar osztályból eltűnt a repul függvény, egy alosztályába került, a RepuloMadar alosztályba. A röpképtelen madarak a Madar alosztályai lesznek, a röpképesek medig a RepuloMadaré.
+        </para>
+
+    </section>        
+
+    <section>
+        <title>Szülő-gyerek</title>
+        <para>
+            Írjunk Szülő-gyerek Java és C++ osztálydefiníciót, amelyben demonstrálni tudjuk, hogy az ősön
+            keresztül csak az ős üzenetei küldhetőek!
+        </para>
+        <para>
+            
+        </para>
+        <para>
+            A feladat lényege igazán egyszerű, meg kell próbálnunk a szülőben létrehozott üzenetet egy gyerekben próbáljuk meg kiiratni. Kezdjük a Java kóddal:
+        </para>
+
+        <para>
+        <programlisting language="java">
+        <![CDATA[
+        class szulo 
+        {
+            public void uzenet()
+            {
+                System.out.println("Szulo");
+            }
+        };
+
+        class gyerek extends szulo 
+        {
+            public void uzenetgyerek()
+            {
+                System.out.println("Gyerek");
+            }   
+
+            public static void main(String[] args)
+            {
+                szulo sz1 = new szulo();
+                szulo sz2 = new gyerek();
+                sz1.uzenet();
+                sz2.uzenetgyerek();
+            }
+        };
+
+        ]]>
+        </programlisting>
+        </para>
+
+        <para>
+            Ahogy megpróbálnánk ezt futtatni, egyből hibát fogunk kapni, ai bizonyitja, hogy tényleg ősön keresztül csak az ős üzeneteit küldhetjük. C++ kód:  
+        </para>
+
+        <para>
+        <programlisting language="java">
+        <![CDATA[
+        #include <iostream>
+
+        using namespace std;
+
+        class szulo {
+            public:
+                void uzenet()
+                {
+                    std::cout<<"Szulo uzenete";
+                }
+        };
+
+        class gyerek : public szulo {
+            public:
+                void gyerekuzenete()
+                {
+                    std::cout<<"Gyerek uzenete";
+                }
+        };
+
+        int main()
+        {
+            szulo* sz1 = new szulo();
+            szulo* sz2 = new gyerek();
+            sz1->uzenet();
+            sz2->gyerekuzenete();
+            return 0;
+        }
+        ]]>
+        </programlisting>
+        </para>
+
+        <para>
+          Hasonló végeredményre jutunk, tehát ez a művelet nem csak Javában de C++ban sem kivitelezhető
+        </para>
+
+
+
+
+    </section>
+
+    <section>
+        <title>Anti OO</title>
+        <para>
+            A BBP algoritmussal a Pi hexadecimális kifejtésének a 0. pozíciótól számított 10^6, 10^7, 10^8 darab
+        jegyét határozzuk meg C, C++, Java és C# nyelveken és vessük össze a futási időket!
+        </para>
+
+
+        <para>
+            A feladatban előre megirt forráskódokat kell lefuttatni, és a futási időket összehasonlitani.  
+        </para>
+
+        <para>
+            Java kód:
+        <programlisting language="java">
+        <![CDATA[
+        */
+        /**
+         * A PiBBP.java-ból kivettük az "objektumorientáltságot", így kaptuk
+         * ezt az osztályt.
+         *
+         * (A PiBBP osztály a BBP (Bailey-Borwein-Plouffe) algoritmust a Pi hexa
+         * jegyeinek számolását végző osztály. A könnyebb olvahatóság
+         * kedvéért a változó és metódus neveket megpróbáltuk az algoritmust
+         * bemutató [BBP ALGORITMUS] David H. Bailey: The BBP Algorithm for Pi.
+         * cikk jelöléseihez.)
+         *
+         * @author Bátfai Norbert, nbatfai@inf.unideb.hu
+         * @version 0.0.1
+         */
+        public class PiBBPBench {
+
+            public static double d16Sj(int d, int j) {
+                
+                double d16Sj = 0.0d;
+                
+                for(int k=0; k<=d; ++k)
+                    d16Sj += (double)n16modk(d-k, 8*k + j) / (double)(8*k + j);
+                
+                return d16Sj - Math.floor(d16Sj);
+            }
+            
+            public static long n16modk(int n, int k) {
+                
+                int t = 1;
+                while(t <= n)
+                    t *= 2;
+                
+                long r = 1;
+                
+                while(true) {
+                    
+                    if(n >= t) {
+                        r = (16*r) % k;
+                        n = n - t;
+                    }
+                    
+                    t = t/2;
+                    
+                    if(t < 1)
+                        break;
+                    
+                    r = (r*r) % k;
+                    
+                }
+                
+                return r;
+            }
+            
+            public static void main(String args[]) {
+                
+                double d16Pi = 0.0d;
+                
+                double d16S1t = 0.0d;
+                double d16S4t = 0.0d;
+                double d16S5t = 0.0d;
+                double d16S6t = 0.0d;
+                
+                int jegy = 0;
+                
+                long delta = System.currentTimeMillis();
+                
+                for(int d=100000000; d<100000001; ++d) {
+                    
+                    d16Pi = 0.0d;
+                    
+                    d16S1t = d16Sj(d, 1);
+                    d16S4t = d16Sj(d, 4);
+                    d16S5t = d16Sj(d, 5);
+                    d16S6t = d16Sj(d, 6);
+                    
+                    d16Pi = 4.0d*d16S1t - 2.0d*d16S4t - d16S5t - d16S6t;
+                    
+                    d16Pi = d16Pi - Math.floor(d16Pi);
+                    
+                    jegy = (int)Math.floor(16.0d*d16Pi);
+                    
+                }
+                
+                System.out.println(jegy);
+                delta = System.currentTimeMillis() - delta;
+                System.out.println(delta/1000.0);
+            }
+        }
+        ]]>
+        </programlisting>
+        Ez a Java megoldása a feladatnak. A kapott eredmények:10^6 : 1.35, 10^7:15.80, 10^8: 180.29
+        </para>
+
+        
+
+        <para>
+        A megoldás C sharpban:
+        <programlisting language="c">
+        <![CDATA[
+        public class PiBBPBench {
+
+            public static double d16Sj(int d, int j) {
+                
+                double d16Sj = 0.0d;
+                
+                for(int k=0; k<=d; ++k)
+                    d16Sj += (double)n16modk(d-k, 8*k + j) / (double)(8*k + j);
+                
+                return d16Sj - System.Math.Floor(d16Sj);
+            }
+
+            public static long n16modk(int n, int k) {
+                
+                int t = 1;
+                while(t <= n)
+                    t *= 2;
+                
+                long r = 1;
+                
+                while(true) {
+                    
+                    if(n >= t) {
+                        r = (16*r) % k;
+                        n = n - t;
+                    }
+                    
+                    t = t/2;
+                    
+                    if(t < 1)
+                        break;
+                    
+                    r = (r*r) % k;
+                    
+                }
+                
+                return r;
+            }
+
+             public static void Main(System.String[]args) { 
+                
+                double d16Pi = 0.0d;
+                
+                double d16S1t = 0.0d;
+                double d16S4t = 0.0d;
+                double d16S5t = 0.0d;
+                double d16S6t = 0.0d;
+                
+                int jegy = 0;
+                
+                System.DateTime kezd = System.DateTime.Now;
+                
+                for(int d=1000000; d<1000001; ++d) {
+                    
+                    d16Pi = 0.0d;
+                    
+                    d16S1t = d16Sj(d, 1);
+                    d16S4t = d16Sj(d, 4);
+                    d16S5t = d16Sj(d, 5);
+                    d16S6t = d16Sj(d, 6);
+                    
+                    d16Pi = 4.0d*d16S1t - 2.0d*d16S4t - d16S5t - d16S6t;
+                    
+                    d16Pi = d16Pi - System.Math.Floor(d16Pi);
+                    
+                    jegy = (int)System.Math.Floor(16.0d*d16Pi);
+                    
+                }
+                
+                System.Console.WriteLine(jegy);
+                System.TimeSpan delta = System.DateTime.Now.Subtract(kezd);
+                System.Console.WriteLine(delta.TotalMilliseconds/1000.0);
+            }
+        }
+        ]]>
+        </programlisting>
+       A futtatás eredményei a C sharp verzióra: 10^6: 1.69, 10^7: 19.5, 10^8: 216.18
+        </para>
+
+
+
+        <para>
+         C/C++ forrás:
+        <programlisting language="c">
+        <![CDATA[
+        #include <stdio.h>
+        #include <math.h>
+        #include <time.h>
+        /*
+         * pi_bbp_bench.c
+         *
+         * DIGIT 2005, Javat tanítok
+         * Bátfai Norbert, nbatfai@inf.unideb.hu
+         *
+         * A PiBBP.java-ból kivettük az "objektumorientáltságot", így kaptuk
+         * a PiBBPBench osztályt, amit pedig átírtuk C nyelvre.
+         *
+         */
+
+        long
+        n16modk (int n, int k)
+        {
+          long r = 1;
+
+          int t = 1;
+          while (t <= n)
+            t *= 2;
+
+          for (;;)
+            {
+
+              if (n >= t)
+            {
+              r = (16 * r) % k;
+              n = n - t;
+            }
+
+              t = t / 2;
+
+              if (t < 1)
+            break;
+
+              r = (r * r) % k;
+
+            }
+
+          return r;
+        }
+
+        double
+        d16Sj (int d, int j)
+        {
+
+          double d16Sj = 0.0;
+          int k;
+
+          for (k = 0; k <= d; ++k)
+            d16Sj += (double) n16modk (d - k, 8 * k + j) / (double) (8 * k + j);
+
+          return d16Sj - floor (d16Sj);
+        }
+
+        main ()
+        {
+
+          double d16Pi = 0.0;
+
+          double d16S1t = 0.0;
+          double d16S4t = 0.0;
+          double d16S5t = 0.0;
+          double d16S6t = 0.0;
+
+          int jegy;
+          int d;
+
+          clock_t delta = clock ();
+
+          for (d = 100000000; d < 100000001; ++d)
+            {
+
+              d16Pi = 0.0;
+
+              d16S1t = d16Sj (d, 1);
+              d16S4t = d16Sj (d, 4);
+              d16S5t = d16Sj (d, 5);
+              d16S6t = d16Sj (d, 6);
+
+              d16Pi = 4.0 * d16S1t - 2.0 * d16S4t - d16S5t - d16S6t;
+
+              d16Pi = d16Pi - floor (d16Pi);
+
+              jegy = (int) floor (16.0 * d16Pi);
+
+            }
+
+          printf ("%d\n", jegy);
+          delta = clock () - delta;
+          printf ("%f\n", (double) delta / CLOCKS_PER_SEC);
+        }
+        ]]>
+        </programlisting>
+        Eredmények: 10^6: 1.48, 10^7: 17.68, 10^8: 202.97
+        </para>
+
+
+
+    
+        <para>
+Ha elvégezzük az összehasonlitást, egyértelműen látszik, hogy a Java teljesitett a legjobban, utánna következik a C, majd utolsóként a C sharp.
+        </para>
+
+
+    </section>
+
+    <section>
+        <title>Ciklomatikus komplexitás</title>
+        <para>
+            Számoljuk ki valamelyik programunk függvényeinek ciklomatikus komplexitását! Lásd a fogalom
+            tekintetében a https://arato.inf.unideb.hu/batfai.norbert/UDPROG/deprecated/Prog2_2.pdf (77-79
+            fóliát)!
+        </para>
+
+        <para>
+A Ciklomatikus komplexitás egy szoftvermetrika, aminek a segitségével, a forráskód elemzése után meg tudja állapitani egy szoftver komplexitását, és ezt egy számmal kifejezi.
+        </para>
+        <para>
+A komplexitás képlete: M=E-N+2*P
+        </para>
+    <para>
+        A képletben az M a komplexitást jelzi, az E a gráf éleinek számát, az N a gráfban levő csúcsok számát, a P pedig az összefüggő komponensek számát.
+    </para>
+        
+
+        <figure>
+            <title>Ciklomatikus Komplexitása a z3a18qa5_from_scratch.cpp programnak</title>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="img/komplex.png" scale="80" />
+                </imageobject>
+                <textobject>
+                    <phrase>Ciklomatikus Komplexitás</phrase>
+                </textobject>
+            </mediaobject>
+        </figure>
+
+        <para>
+            A táblázat a  <link xlink:href="http://www.lizard.ws/">Lizard</link> oldalon található ciklomatikus komplexitást számoló programot használtam fel.
+        </para>
+    </section>
+
+      
+        
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+</chapter> 
