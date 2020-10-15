@@ -1,0 +1,365 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Mandelbrot!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+</info>
+
+   <section>
+        <title>Reverse engineering UML osztálydiagram</title>
+        <para>
+        UML osztálydiagram rajzolása az első védési C++ programhoz. Az osztálydiagramot a forrásokból
+        generáljuk (pl. Argo UML, Umbrello, Eclipse UML) Mutassunk rá a kompozíció és aggregáció
+        kapcsolatára a forráskódban és a diagramon, lásd még: https://youtu.be/Td_nlERlEOs.
+        Lásd fóliák!
+        </para>
+
+        
+        <para>
+Ebben a feladatban a legelső C++ védési programunk osztálydiagrammját kell elkészítenünk egy erre alkalmas szoftverben. Az én választásom az Visual Paradigm nevű programra esett.
+
+        </para>
+
+        <figure>
+            <title>.</title>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="img/z3a7.png" scale="60" />
+                </imageobject>
+                <textobject>
+                    <phrase>.</phrase>
+                </textobject>
+            </mediaobject>
+        </figure>
+
+        <para>
+A fent látható osztálydiagramm a könyv első fejezetében bemutatott Binfa kódjához tartozik. Ezzel a diagrammal ábrázolhatjuk a program felépítését, átláthatóvá teszi, hogy milyen módon kapcsolódnak egymáshoz az osztályok.
+        </para>
+     <para>
+       Felfedezhető a képen pár érdekes szimbólum, mint például a +,-,#. Ezek jelentései:
+     </para>
+     <para>
+      A + szimbólum a publikus attribútumoknál figyelhető meg.
+     </para>
+     <para>
+       A - szimbólum a privát attribútumoknál figyelhető meg.
+     </para>
+     <para>
+       A # szimbólum a védett attribútumoknál figyelhető meg.
+     </para>
+     <para>
+       A fekete rombuszt tartalmazó nyíl a kompozíció jele, az üres rombusz az agregáció jele, a szaggatott nyíl a függést szimbolizálja, a sima az asszociációt. 
+     </para>
+        <para>
+          A feladat még elvárja, hogy nézzük meg a kompozíció és aggregáció között lévő kapcsolatot. Az aggregáció két osztály közti kapcsolatára utal, úgy hogy az egyik osztály a másiknak egy része. A kompozíció hasonlóan 2 osztály közti kapcsolatát jelenti, viszont itt az osztályok teljes szinkronban működnek, az objektumok hasonlóan viselkednek majd.
+ </para>
+
+
+        
+    </section>        
+
+    <section>
+        <title>Forward engineering UML osztálydiagram</title>
+
+        <para>
+            UML-ben tervezzünk osztályokat és generáljunk belőle forrást!
+        </para>
+
+
+        <para>
+          A feladat megoldásához felhasználom az előző feladatban leirt madaras példát, ennek készitem el az osztálydiagrammját szintén a Visual Paradigm nevű programban
+</para>
+
+        <figure>
+            <title>.</title>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="img/kacsa.png" scale="60" />
+                </imageobject>
+                <textobject>
+                    <phrase>.</phrase>
+                </textobject>
+            </mediaobject>
+        </figure>
+
+        <para>
+          Látható, hogy van egy madar osztályunk, amely rendelkezik egy függvénnyel, nevezetesen ez a repul függvény. 2 leszármazottja is van, a Kacsa és a Pingvin alosztály képében. A Program osztály függ a Madar osztálytól, ezt mutatja a szaggatott nyil is. 
+  </para>
+
+        <para>
+           Most pedig következzen a legenerált forrás:
+        </para>
+
+        <para>
+            -GLOBAL.h-
+            <programlisting language="c">
+        <![CDATA[
+        #include <exception>
+        using namespace std;
+
+        #ifndef __GLOBAL_h__
+        #define __GLOBAL_h__
+
+        class GLOBAL;
+
+        class GLOBAL
+        {
+
+            public: int main();
+        };
+
+        #endif
+
+        ]]>
+        </programlisting>
+        
+        </para>
+
+        <para>
+            -GLOBAL.cpp-
+            <programlisting language="c">
+        <![CDATA[
+        #include <exception>
+        using namespace std;
+
+        #include "GLOBAL.h"
+        int GLOBAL::main() {
+            throw "Not yet implemented";
+        }
+
+
+        ]]>
+        </programlisting>
+        
+        </para>
+
+        <para>
+            -Madar.h-
+            <programlisting language="c">
+        <![CDATA[
+        #include <exception>
+        using namespace std;
+
+        #ifndef __Madar_h__
+        #define __Madar_h__
+
+        class Madar;
+
+        class Madar
+        {
+
+            public: virtual void repul();
+        };
+
+        #endif
+        ]]>
+        </programlisting>
+        
+        </para>
+
+        <para>
+            -Madar.cpp-
+            <programlisting language="c">
+        <![CDATA[
+        #include <exception>
+        using namespace std;
+
+        #include "Madar.h"
+        virtual void Madar::repul() {
+            throw "Not yet implemented";
+        }
+
+
+        ]]>
+        </programlisting>
+        
+        </para>
+
+        <para>
+            -Pingvin.h-
+            <programlisting language="c">
+        <![CDATA[
+        #ifndef __Pingvin_h__
+        #define __Pingvin_h__
+
+        #include "Madar.h"
+
+        // class Madar;
+        class Pingvin;
+
+        class Pingvin: public Madar
+        {
+        };
+
+        #endif
+
+        ]]>
+        </programlisting>
+        
+        </para>
+
+        <para>
+            -Pingvin.cpp-
+            <programlisting language="c">
+        <![CDATA[
+        #include "Pingvin.h"
+        #include "Madar.h"
+
+
+        ]]>
+        </programlisting>
+        
+        </para>
+
+        <para>
+            -Program.h-
+            <programlisting language="c">
+        <![CDATA[
+        #include <exception>
+        using namespace std;
+
+        #ifndef __Program_h__
+        #define __Program_h__
+
+        class Program;
+
+        class Program
+        {
+
+            public: void fgv();
+        };
+
+        #endif
+        ]]>
+        </programlisting>
+        
+        </para>
+
+        <para>
+            -Program.cpp-
+            <programlisting language="c">
+        <![CDATA[
+        #include <exception>
+        using namespace std;
+
+        #include "Program.h"
+        void Program::fgv() {
+            throw "Not yet implemented";
+        }
+        ]]>
+        </programlisting>
+        
+        </para>
+
+        <para>
+            -Kacsa.h-
+            <programlisting language="c">
+        <![CDATA[
+        #ifndef __Kacsa_h__
+        #define __Kacsa_h__
+
+        #include "Madar.h"
+
+        // class Madar;
+        class Kacsa;
+
+        class Kacsa: public Madar
+        {
+        };
+
+        #endif
+        ]]>
+        </programlisting>
+        
+        </para>
+
+        <para>
+            -Kacsa.cpp-
+            <programlisting language="c">
+        <![CDATA[
+        #include "Kacsa.h"
+        #include "Madar.h"
+        ]]>
+        </programlisting>
+        
+        </para>
+
+
+
+    </section>
+
+    <section>
+        <title>BPMN</title>
+        <para>
+            Rajzoljunk le egy tevékenységet BPMN-ben!
+        </para>
+
+        <para>
+           A feladatban az volt a dolgunk, hogy egy tevékenységet rajzoljunk/modellezzünk le BPMN-ben. Ehhez a már megismert Visual Paradigm-ot fogom felhasználni. 
+        </para>
+        <figure>
+            <title>BPMN tevékenység</title>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="img/Rendeles.png" scale="40" />
+                </imageobject>
+                <textobject>
+                    <phrase>BPMN tevékenység</phrase>
+                </textobject>
+            </mediaobject>
+        </figure>
+        <para>
+A fentebb látható ábrán egy csomag kiszállítása figyelhető meg. A futár azzal kezdi a kiszállitást, hogy felveszi a csomagot, majd elindul a megfelelő címre. Ha a csomag megrendelője otthon tartózkodik, akkor a csomagot átadja, és befejezte a kiszállitást. Ha nincs otthon akkor egy másik elágazáshoz ér, megnézi, hogy kapott e a csomag rendelőjétől megjegyzést, hogy mi a teendő ha nem tudja személyesen átadni a csomagot. Ha van, akkor az utasitások alapján cselekszik, ha nincs akkor viszont küld egy értesitést a megrendelőnek, hogy sikertelen a kiszállitás, és a csomagot visszaviszi.
+        </para>
+        
+    </section>
+
+    <section>
+        <title>EPAM: OOP OO modellezés</title>
+        <para>
+            Írj egy 1 oldalas esszét arról, hogy OO modellezés során milyen elveket tudsz követni (pl.: SOLID,
+            KISS, DRY, YAGNI).
+        </para>
+
+
+        <para>
+</para>
+        <para>
+            A <command>SOLID</command> elv a következő öt elv kezdőbetüiből áll össze: 
+        </para>
+        <para>
+            <command>1.</command> Single Responsibility principle. Már a névből is következtethetünk a jeletésére, egy modul egy problémát akarjon csak orvosolni, segitve igy az átláthatóságot és a javitások kivitelezését. Sokkal egyszerűbb átlátni a programot, ha nem egy osztályban szeretnénk mindent megoldani, hanem minden feladatra jutna egy.</para>
+        <para>
+            <command>2.</command> Open/Closed principle. Ha már van egy létező, jól működő, a feladatát teljesítő osztályunk, akkor azt ne módosítsuk egy új funkció beépitésekor. Ilyen esetben az osztály kiterjesztése a helyes megoldás, különben a programban hibák jelentkezhetnek, ami elkerülendő.</para>
+        <para>
+            <command>3.</command> Liskov Substitution principle. Ez már az előző fejezetben is szerepelt. Ez a rész azt mondja ki, hogy egy objektum a programunkban helyettesithető legyen az altipusai példányaival is, úgy, hogy a program működése ne változzon meg. A korábbi példában is láthattuk, hogy ha ez az elv sérül, nem kell mást tennünk csak egy jobban átgondolt implementációt irnunk.</para>
+        <para>
+            <command>4.</command> Interface Segregation principle. Ez az elv azt mondja ki, hogy nem jó túl nagy interfészeket használni a programunkban, ezeket inkább szegregálva/széttördelve alkalmazzuk. Hasonlóan az első elvhez itt is az a cél, hogy az interfészek specifikusak legyenek, ne egy próbáljon mindent megoldani magában.</para>
+        <para>
+            <command>5.</command> Dependency Inversion principle. Az elv szerint a felsőbbrendű osztály nem kell ismerje az alacsonyabb rendűek implementációját. </para>
+
+        <para>
+            A KISS, avagy Keep It Simple, Stupid elv kimondja hogy a kódunk legyen egyszerű, bárki számára megérthető, legyen tiszta a kód. A cél, hogy ne csak mi értsük meg, mire hivatott a kódunk, ugyanis lehet, hogy más is dolgozni fog vele. A kis metódusok használata ajánlott, hasonló szabályok vonatkoznak itt is mint a Single Responsability Principle-ben. A változók neve legyen érthető. Minél több esetünk van, annál egyszerűbb észrevenni, hogy pontosan melyik nem működik, vagy nem csinálja azt amit mi szeretnénk. Ha előfordulna, hogy nem teljesül az elv, akkor megoldhatjuk a problémát a kód tördelésével, a refactor használatával.
+        </para>
+        <para>
+            A <command>DRY</command> ,azaz a Don't Repeat Yourself elv kimondja, hogy a kódunkban minden sor egyszer szerepeljen, ne ismételgessük önmagunkat, ha valamire többször szükségünk van, irjunk rá egy függvényt. Rengeteg pozitiv hatása van ennek az elvnek, például, ha a függvényt használjuk, akkor egy esetleges hibát elég egyszer kijavitanunk, és mindenhol ahol a függvény meg lett hivva, a probléma elhárul. Ezt az elvet e legkönnyebb megsérteni, ugyanis elég annyi, hogy ne vegyük észre, hogy egy adott részt már használtunk a kód megirása során, és újra leirjuk.</para>
+        <para>
+            A <command>YAGNA</command> elv a következő, jelentése: You Aren’t Gonna Need It. Az elv kimondja, hogy ne dolgozzunk előre, ne irjunk olyan dolgokat, aminek a működéséhez szükséges dolgokat még nem implementáltuk. Ez azért fontos, mert lehet, hogy végül teljesen más megoldást választunk, és akkor fölöslegesen dolgoztunk, vagy lehet, hogy végül más adatokkal kell majd dolgoznia az előre megirt résznek, mint az eredetileg terveztük.  </para>
+
+       
+    </section>
+
+    <section>
+        <title>.</title>
+        <para>
+            
+        </para>
+        <para>
+            Tanulságok, tapasztalatok, magyarázat...
+        </para>
+        
+    </section>    
+
+  
+</chapter>                
