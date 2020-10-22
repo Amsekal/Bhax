@@ -1,0 +1,255 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+  <info>
+    <title>Helló, Chomsky!</title>
+    <keywordset>
+      <keyword/>
+    </keywordset>
+  </info>
+
+  <section>
+    <title>Encoding</title>
+    <para>
+      Fordítsuk le és futtassuk a Javat tanítok könyv MandelbrotHalmazNagyító.java forrását úgy, hogy a
+      fájl nevekben és a forrásokban is meghagyjuk az ékezetes betűket!
+      https://www.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/adatok.html
+    </para>
+
+    <para>
+      A feladat célja, hogy megoldjuk azt a problémát, hogy ha magyar nyelvű karaktereket használunk a programunkban, akkor hibát dobjon ki. Hogy ezt meg tudjuk csinálni nem kell mást tennünk csak a nyelvbeállitásokat átállitanunk. A <command>locale</command> paranccsal tekinthetőek meg ezek a beállitások, ez kilistázza számunkra a fontos információkat. Használjuk a <command>sudo dpkg-reconfigure locales</command> parancsot, ennek segitségével irjuk át a beállitásokat. Semmi más dolgunk nincs, mit kiválasztani a hu_HU.UTF - 8 UTF - 8 lehetőséget, mint ahogyan ezt az alábbi ábra is mutatja:
+</para>
+    <figure>
+      <title>Encoding</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="img/encoding.png" scale="50" />
+        </imageobject>
+        <textobject>
+          <phrase>Encoding</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+    <para>
+      ?iután ezt kiválasztottuk, már fel kell ismernie a forditónak a magyar karaktereket. Egy másik megoldás a forditás után irni a -encoding ISO-8859-2 utasitást. Ebben az ISO-8859-2-ben vannak eltárolva a magyar karakterek, de mellettük még fellelhető például a cseh, bosnyák, román, szlovén, szlovák, lengyel (tehát a legtöbb Kelet-Európai nemzet) nyelv karakterei is .
+    </para>
+
+  </section>
+
+  <section>
+    <title>l334d1c4</title>
+    <para>
+      Írj olyan OO Java vagy C++ osztályt, amely leet cipherként működik, azaz megvalósítja ezt a betű
+      helyettesítést: https://simple.wikipedia.org/wiki/Leet (Ha ez első részben nem tetted meg, akkor írasd
+      ki és magyarázd meg a használt struktúratömb memóriafoglalását!)
+    </para>
+
+
+    <para>
+Ebben a feladatban egy már megismert problémát kell megoldanunk egy másik megoldással. Egy megadott szöveget kell leet irásmódba átírnunk. Ez azt jelenti, hogy a betűt egy hozzá hasonló karakterre cserélünk ki, például az A-t 4-re, vagy az I-t 1-re. A programot megirhatjuk javában vagy C++ban, én az utóbbit preferálom, ezért azt is használtam a megoldás során:
+    </para>
+
+    <programlisting>
+      <![CDATA[
+        #include <iostream>
+        #include <string.h>
+        #include <locale>
+        #include <sstream>
+        using namespace std;
+
+        class Chiper{
+        public:
+            string leetchars[26] = {"4","B","<","[)","3","F","6","|=|","1","J","|<","l","M","|/|","0","P","0_","R","2","-.-","|_|","v","vv","x","`/","z"};
+            string leetnums[10]  = {"O","I","Z","3","A","S","G","Z","8","g"};
+
+            void calc(char ch);
+        };
+        void
+        Chiper::calc(char ch)
+        {
+            int ertek;
+            ch=toupper(ch);
+            ertek=int(ch);
+            if(int(ch) >=65 && int(ch)<=90)
+            {
+                cout<<leetchars[ertek-65];
+            }
+            else if(int(ch) >=48 && int(ch)<=57)
+            {
+                cout<<leetnums[ertek-48];
+            }
+            else cout<<ch;
+        }
+
+        int main (int argc, char **argv)
+        {
+            Chiper* a = new Chiper();
+            char ch;
+            while(cin>>std::noskipws>>ch)
+            {
+                a->calc(ch);
+            }
+            return 0;
+        }
+        ]]>
+    </programlisting>
+    <para>
+A program viszonylag egyszerű, egyszerűbb mint amit a másik fejezetben használtunk. Egy Cipher nevű osztályban létrehozok két string tömböt, az egyikben az abc betűinek egy leet megfelelőjét tárolom el (fontos hogy ezek sorrendben legyenek beirva), a másikban pedig a számok leet megfelelőjét.
+Az osztályban még létrehozunk egy calc nevű függvényt, ami egy betűt fog még kérni a működéshet. Az osztályon kivül van ennek a függvénynek a megirása. Hogy elkerüljünk minden problémát, amit a kis és nagy betűk váltakozása okozna, minden betűt felnagyitunk (uppercase). Ezek után szükségünk lesz egy ascii táblázatra, ennek segitségével meg tudjuk határozni a betűk értékét. Egy ertek integer felveszi a függvény által bekért karakter értékét, ha az 65 és 90 között van, akkor egy nagy betűről van szó, ha 48 és 57 között, akkor pedig számról. Ha betű, akkor az értékéből kivonjuk a 65-öt, és a kapott eredményt felhasználva megkapjuk a leet megfelelőjét. Mivel a leet-es tömbök nullától indulnak ezért nem lesz gond, ha az ertek-65 értéke 0. Hasinlóan történik a számok esetén is.
+    </para>
+    <para>A main függvény sem túl bonyolult, addig olvassa a karaktereket amig vannak, majd meghivja minden karakterre a calc függvényt, ami átalakitja a dolgokat leetbe. Mint ahogy a feladat elején is emlitettem ez egy egyszerűbb megoldás, ugyanis itt minden karakternek csak egy leet megfelelője van, ezért nem is található a programban egy random megfelelőt kiválasztó rész/alprogram.
+      </para>
+
+
+  </section>
+
+  <section>
+    <title>Full screen</title>
+    <para>
+      Készítsünk egy teljes képernyős Java programot!
+      Tipp: https://www.tankonyvtar.hu/en/tartalom/tkt/javat-tanitok-javat/ch03.html#labirintus_jatek
+    </para>
+
+
+    <para>
+A feladat lényege, hogy irjun egy olyan Java programot, ami teljes képernyős módban van. A feladat egyszerűnek tűnhet, azonban mégsem sikerült teljesen egyedül megoldanom, ezért mások megoldásából inspirálódtam. A kód beállitja az ablakot teljes képernyős módba, átszinezi, majd beleir egy szöveget
+    </para>
+    <para>
+      <command>Screen.java</command>
+    </para>
+    <programlisting>
+      <![CDATA[
+        import java.awt.*;
+        import javax.swing.JFrame;
+
+        public class Screen {
+            private GraphicsDevice vc;
+
+            public Screen(){
+                GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+                vc = env.getDefaultScreenDevice();
+            }
+
+            public void setFullScreen(DisplayMode dm, JFrame window){
+                window.setUndecorated(true);
+                window.setResizable(false);
+                vc.setFullScreenWindow(window);
+            
+                if(dm != null && vc.isDisplayChangeSupported()){
+                    try{
+                        vc.setDisplayMode(dm);
+                    }
+                    catch(Exception ex){}
+                }
+                
+
+            }
+            public Window getFullScreenWindow(){
+                return vc.getFullScreenWindow();
+            }
+
+            public void restoreScreen(){
+                Window w = vc.getFullScreenWindow();
+                if(w!=null){
+                    w.dispose();
+                }
+                vc.setFullScreenWindow(null);
+            }
+
+        }
+        ]]>
+    </programlisting>
+
+    <para>A Screen-javában a következő dolgok történnek: létrehozunk egy GraphicsDevice-t vc néven, az env-ben eltároljuk a lokális GraphicsEnvironment-et, a vc-ben pedig az alapétrtelmezett képernyőt tároljuk el. Ezután egy SetFullScreen függvényt használva az ablakot fullscreen módba tesszük. Azért, hogy mindig ilyen módban legyen az ablakunk, beállitjuk, hogy a felhasználó ne tudja ezt átméretezni.
+    </para>
+    <para>
+      <command>Engine.java</command>
+    </para>
+    <programlisting>
+      <![CDATA[
+            import java.awt.*;
+            import javax.swing.JFrame;
+
+
+            public class Engine extends JFrame{
+                public static void main(String[] args){
+                    DisplayMode dm = new DisplayMode(800,600,16,DisplayMode.REFRESH_RATE_UNKNOWN);
+                    Engine e = new Engine();
+                    e.run(dm);
+                }
+
+                public void run(DisplayMode dm){
+                    getContentPane().setBackground(Color.BLUE);
+                    setForeground(Color.BLACK);
+                    setFont(new Font("Arial", Font.PLAIN, 24));
+
+                    Screen s = new Screen();
+                    try{
+                        s.setFullScreen(dm,this);
+                        try{
+                            Thread.sleep(5000);
+                        }
+                        catch(Exception ex) {}
+                    }
+                    finally{
+                        s.restoreScreen();
+                    }
+                }
+
+                public void paint(Graphics g)
+                {
+                    super.paint(g);
+                    g.drawString("Prog2",350,350);
+                }
+            }
+        ]]>
+    </programlisting>
+
+
+    <para>
+Az Engine.java kódjában feltűnhet, hogy az Engine class örököl a jFrame osztálytól. A main függvényben, ami ebben a classban található, lesz beállitva a DisplayMode, a példányositás és ennek futtatása. A run függvény tárolja a háttér és betűk szinét, és a betű tipusát/méretét. Ezután már csak a megjelenitéssel kell foglalkoznunk, ezt a paint függvény végzi el.
+    </para>
+    <figure>
+      <title>fullscreen</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="img/fullscreen.png" scale="40" />
+        </imageobject>
+        <textobject>
+          <phrase>fullscreen</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+  </section>
+
+  <section>
+    <title>Paszigráfia Rapszódia OpenGL full screen vizualizáció</title>
+    <para>
+      Lásd vis_prel_para.pdf! Apró módosításokat eszközölj benne, pl. színvilág, textúrázás, a szintek jobb
+      elkülönítése, kézreállóbb irányítás.
+    </para>
+
+
+    <para>
+A megoldáshoz Bátfai Norbert tanár úr kódját használtam fel.
+      <link xlink:href="https://gitlab.com/nbatfai/pasigraphy-rhapsody/-/tree/master/para/docs">
+        <filename>kódját</filename>
+      </link>.
+    </para>
+
+    <para>
+A feladatunk igen egyszerűnek tűnik, egy már meglévő kódot kell módositanunk és futtatnunk.
+    </para>
+
+    <para>
+Hogy futtatni tudjuk a kódot, több dologra is szükségünk lesz: libboost, OpenGL, libsdl2-dev és libsdl2-image-dev.
+    </para>
+
+    <para>
+Ha sikerült működésre birnunk a programot, akkor már csak a változtatások elvégzése maradt hátra. A legegyszerűbb változtatás talán ha a szineken változtatunk. A program szinkódokat használ, ha megvannak a kódok, akkor egy glColor3f(x.f,y.f,z.f) alakú kifejezésbe kell őket tennünk, ahol az x,y,z a kódok helyét jelöli.    </para>
+
+    <para>
+ide még jön egy kép.
+    </para>
+
+  </section>
+</chapter>
