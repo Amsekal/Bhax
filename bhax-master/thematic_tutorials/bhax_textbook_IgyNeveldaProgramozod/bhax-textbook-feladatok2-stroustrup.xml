@@ -1,0 +1,310 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+  <info>
+    <title>Helló, Stroustrup!</title>
+    <keywordset>
+      <keyword/>
+    </keywordset>
+  </info>
+
+  <section>
+    <title>JDK osztályok</title>
+
+    <para>
+      Írjunk olyan Boost C++ programot (indulj ki például a fénykardból) amely kilistázza a JDK összes
+      osztályát (miután kicsomagoltuk az src.zip állományt, arra ráengedve)!
+    </para>
+
+
+
+    <para>
+      Ebben a feladatban egy olyan C++ kód létrehozása a célunk, amely egy könyvtárban és annak alkönyvtáraiban képes megtalálni és megszámolni a .java kiterjesztésű fájlokat. A feladat arra is külön kitér, hogy mely állományra kell ezt a kódot kipróbálnunk, ami nem más, mint JDK src.zip-ben található mappa. A feladat megvalósitásához felhasználtam a boost.org weboldalon található informciókat. Az itt leirt függvények segitségével sikerült megoldani a feladatot.
+    </para>
+
+    <para>
+      A c++ kód:
+    </para>
+
+    <programlisting>
+      <![CDATA[
+        #include <iostream>
+		#include <boost/filesystem.hpp>
+
+		using namespace std;
+
+
+		int main()
+		{
+			int db=0;
+
+			boost::filesystem::recursive_directory_iterator i("/home/arod01/javasrc");
+			while(i != boost::filesystem::recursive_directory_iterator() ){
+				
+				if(i->path().extension() == ".java" && is_regular_file(i->path())){
+					
+				db++;
+				}
+				i++;
+			}
+			cout<<endl<<db<<endl;
+			return 0;
+		}
+        ]]>
+    </programlisting>
+
+
+    <para>A programunk kódja még ha rövid is, magyarázatra szorul. A program rövidsége a már emlitett Boost által biztositott függvényeknek köszönhető. Hogy ezeket használni tudjuk, includeolnunk kell a filesystem.hpp-t, ez látható is a program első sorai között. 
+   </para>
+
+    <para>
+      Szükségünk lesz egy változóra, ami a .java kiterjesztésű fájlokat számolja, ez a változó lesz a db. Kezdetben 0 az értéke, ugyanis nem tudhatjuk, hogy fog e tartalmazni a megadott könyvtár és annak alkönyvtárai számunkra megfelelő fájlokat. Ezek után egy I iterátorba elmentjük a leelenőrizni kivánt mappát.
+    </para>
+
+    <para>
+      Ezek után létrehozunk egy while ciklust, ami addig megy, amig nem néztünk meg minden lehetséges helyet. Egy if segitségével megnézzük az összes file kiterjesztését, és amikor .java-t találunk ott növeljük a db-t. Az ifben azt is megnézzük, hogy a .java kifejezés biztosan egy fájlhoz tartozik e, nem pedig egy könyvtár nevében szerepel.  Az I növelésével térünk át a következő elemre. Végül a program kiirja a db eredményét.
+    </para>
+
+   
+  </section>
+
+  <section>
+    <title>Másoló-mozgató szemantika</title>
+
+    <para>
+      Kódcsipeteken (copy és move ctor és assign) keresztül vesd össze a C++11 másoló és a mozgató szemantikáját, a mozgató konstruktort alapozd a mozgató értékadásra!
+    </para>
+ 
+
+    <para>
+      A feladat célja, hogy a korábban megirt és felhasznált másoló szemantikát implementáljuk, és egy forráskódon keresztül mutassuk be.
+    </para>
+    <para>
+      Forráskód
+    </para>
+
+    <programlisting>
+      <![CDATA[
+        #include <iostream>
+
+		using namespace std;
+
+		class Lista{  
+
+		public:
+			Lista(){  
+				cout<<"lista ctor"<<endl;
+				fej = new ListaElem();
+			}
+
+			~Lista(){  
+				cout<<"lista dtor"<<endl;
+				ListaElem* elem = fej;
+				while(elem){
+					ListaElem* this_elem = elem;
+					elem = elem->kov;
+					delete this_elem;
+				}
+				
+			}
+
+			Lista(Lista& old){  
+				cout<<"masolo konstruktor"<<endl;
+				fej = masol(old.fej);
+			}
+			Lista(Lista&& old){  
+				cout<<"mozgato konstruktor"<<endl;
+				fej = std::move(old.fej);
+				old.fej = nullptr;
+			}
+
+			Lista& operator=(const Lista& old){  
+				cout<<"masolo ertekadas"<<endl;
+				fej = masol(old.fej);
+				return *this;
+			}
+			Lista& operator=(Lista&& old){ 
+				cout<<"mozgato ertekadas"<<endl;
+				fej = old.fej;
+				old.fej = nullptr;
+				return *this;
+			}
+
+			void beszur(int ertek){  
+				ListaElem* nextElem = fej;
+				while(nextElem->kov != nullptr){
+					nextElem = nextElem->kov;
+				}
+				ListaElem* newElem = new ListaElem();
+				nextElem->kov = newElem;
+				newElem->adat = ertek;
+				newElem->kov = nullptr;
+			}
+
+			void kiir()  
+			{
+				ListaElem* elem = fej;
+
+					while(elem->kov != nullptr)
+					{
+						cout<<"elem->adat = "<< elem->adat << "  elem memcime: " <<elem<<endl;
+						elem = elem->kov;
+					}
+				
+			}
+
+			class ListaElem{  
+			public:
+				int adat = 0;
+				ListaElem* kov = nullptr;
+			};
+
+		private:  //privat resz
+			ListaElem* fej = nullptr;
+
+			ListaElem* masol(ListaElem* elem){  
+				ListaElem* masolElem;
+				if(elem != NULL)
+				{
+					masolElem = new ListaElem();
+					masolElem->adat = elem->adat;
+					if(elem->kov != nullptr)
+					{
+						masolElem->kov = masol(elem->kov);
+					}
+					else{
+						masolElem->kov = nullptr;
+					}
+				}	
+				return masolElem;
+			}
+
+		};
+
+		int main(int argc, char* argv[])  
+		{
+			std::cout << "Lista lista; //";
+			Lista lista;
+
+			lista.beszur(1);
+			lista.beszur(2);
+
+			std::cout << "  Lista :" << std::endl;
+			lista.kiir();
+
+			std::cout << "\nLista lista2(lista); //";
+			Lista lista2(lista);	
+			std::cout << "  Lista2 :" << std::endl;
+			lista2.kiir();
+
+			std::cout << "\nLista lista3; //";
+			Lista lista3;
+
+			std::cout << "lista3=lista2; //";
+			lista3=lista2;
+
+			std::cout << "  Lista3 :" << std::endl;
+			lista3.kiir();
+
+			std::cout << "\nLista lista4=std::move(lista3); //";
+			Lista lista4(std::move(lista3));
+
+			std::cout << "  Lista4 :" << std::endl;
+			lista4.kiir();
+
+			std::cout << "\nLista lista5; //";
+			Lista lista5;
+
+			std::cout << "lista5 = std::move(lista4); //";
+			lista5 = std::move(lista4);
+
+			std::cout << "  Lista5 :" << std::endl;
+			lista5.kiir();
+
+			return 0;
+		}
+
+        ]]>
+    </programlisting>
+
+    <para>
+      A feladatban egy Lista osztály segitségével hozok létre egy listát. Ebben az osztályban található meg a konstruktor, destruktor amik segitenek a példányositásban. A konstruktorban létrehozzuk a lista fejét, a destruktorban pedig töröljük a teljes listát.
+    </para>
+    <para>
+      Ebben az osztályban irjuk meg a mozgató konstruktort és a másoló konstruktort is. A másoló konstruktor lemásolja a lista egyik elemét, mig a mozgató létrehoz egy új fejet. Ezek után létrehozunk még egy osztályt a lista elemeinek, hogy lehessen az elemek között mozogni. Itt egy változóba mentjük el a következő elem pointerét. Lesz még egy kiir függvény, ami kiirja a listát, és egy beszur, ami a lista végére tesz egy új elemet.
+    </para>
+    <para>
+      A fő függvényben létrehozunk 5 listát a függvények segitségével, majd ezeket kiiratjuk.
+    </para>
+
+  </section>
+
+
+  <section>
+    <title>Összefoglaló</title>
+
+    <para>
+      Az előző 4 feladat egyikéről írj egy 1 oldalas bemutató "esszé" szöveget!
+    </para>
+
+ 
+
+    <para>
+     A Másoló-mozgató szemantika feladatot válaszottam.
+    </para>
+    <para>
+      A feladat megoldásához a Lista adatszerkezetet használom. Egy lista egy olyan adatszerkezet, amely megvalósithat akár vermet vagy sort is. A lista egy elemi adatszerkezet, van egy feje és egy vége, ezek között található a többi elem. A listában nem lehet ugrálni az elemek között, mindegyik elemnek megvan az előző és következő eleme, csak ezekre lehet tőle eljutni. Létre lehet hozni olyan listát is, amely csak az egyik irányba tud haladni, például, ha egyik elemnek sem adjuk meg, melyik elem volt előtte, akkor a listában nem lehet hátrafelé haladni. A kód elején létrehozzuk a fő osztályunkat, Lista néven. Itt lesz megtalálható a konstruktor, destruktor, ezek segitenek majd az osztály példányositásában. A konstruktoron belül létrehozunk egy fejet a listának, ez lesz a pont ahonnan kezdődik a lista, ez egy új ListaElem lesz. A destruktor szerepe, hogy a példányt törölje, jelen esetben ez lépésről lépésre fog megvalósúlni: a fejtől elindulva halad egyenesen a lista végéig, és az érintett elemeket pedig törli a memóriából, mig végül a teljes lista megszűnik.
+    </para>
+    <para>
+      A konstruktor-destruktor páros után következik az osztály következő tagja, a másoló konstruktor, utánna pedig a mozgató konstruktor.  A másoló konstruktor feladatában fog segiteni a masol függvény. Ez a függvény egy deep copyt hoz létre. Ez paraméterkén egy másolandó elemet fog kapni. A függvényben létrehozunk egy masolElemet, majd ezt leellenőrizzük, hogy ne legyen null. Ha nem null, akkor a másoladnó elem adatait megkapja a másolt elem. Ha a következő elemként  a null pointerre mutat, az azt jelenti, hogy elértünk a lista végéhez, különben az eredeti elem következőjét kapja meg.
+    </para>
+    <para>
+      A mozgató konstruktor a move függvényt használva fog működni, és a régi fejet pedig töröljük. Mindkét esetben változni fog a lista feje, egy új fejet hozunk létre. A másoló és mozgató értékadás különböznek a megszokottól. A másoló esetén, mint már emlitettem a masol függvény végzi el a feladatot, a mozgató esetében a régi fej adatait megkapja egy új fej. Mindkét esetben használjuk a *this pointert, ami minden esetben saját magára mutat, ennek segitsgével sokkal egyszerűbbé válik például a régi fej törlése
+    </para>
+    <para>
+      Még található az osztályban egy beszur és egy kiir függvény is. Ezek funkciójára már a nevükből is lehet következtetni. A beszur függvény egy új elemet szúr be a lista végére. Ezt úgy teszi a program, hogy végig megy a listán, és mikor eléri azt az elemet, amely következője a null pointer, átállitja, és az új elemre fog mutatni, és annak a következője lesz a null pointer. A kiir is hasonlóan végigmegy  a listán, és minden elemet, amit érintett, kiirja.
+    </para>
+    <para>
+      A listának az elemei is egy osztályhoz tartoznak, ez lesz a ListaElem class. Ezt az osztályt is, mint ahogyan a korábbi függvényeket, a Lista osztályban szerepel. Itt mondjuk meg miket tartalmazzon a lista egy adott eleme: egy értéket, és a következő elemre mutató pointert. Mivel csak a következő elemnek a pointerét tároljuk, a listában nem lehet majd hátrafelé haladni, nem tudjuk majd egy elemről megállapitani, hogy melyik tag volt előtte.
+    </para>
+    <para>
+      Ezek után következik a fő függvény, a main, itt leszenk felhasználva az előbb megirt függvények és osztályok. Készitünk öt darab listát, mindegyiket máshogy hozzuk létre, felhasználva a másoló/mozgató szemantikát. Ezeket végül kiiratjuk a kiir fügvénnyel.
+    </para>
+
+
+  </section>
+
+  <section>
+    <title>EPAM: Kind of equal</title>
+
+    <para>
+      Adott az alábbi kódrészlet.
+      // Given
+      String first = "...";
+      String second = "...";
+      String third = "...";
+      // When
+      var firstMatchesSecondWithEquals = first.equals(second);
+      var firstMatchesSecondWithEqualToOperator = first == second;
+      var firstMatchesThirdWithEquals = first.equals(third);
+      var firstMatchesThirdWithEqualToOperator = first == third;
+      Változtasd meg a String third = "..."; sort úgy, hogy a
+      firstMatchesSecondWithEquals, firstMatchesSecondWithEqualToOperator,
+      firstMatchesThirdWithEquals értéke true, a
+      firstMatchesThirdWithEqualToOperator értéke pedig false legyen. Magyarázd
+      meg, mi történik a háttérben.
+    </para>
+
+
+    <para>
+      A feladat ad 3 Stringet, amelyek tartalma azonos, és pár var változót, amelyek a kifejezések igazságértékeit tárolkáj majd. A cél, hogy megváltoztassuk a megadott sort, úgy, hogy a felsorolt követelményeknek megfeleljen a programunk. Ezt egy nagyon egyszerű lépéssel tudjuk elérni, a String third = new String("..."); kifejezésre cseréljük a megadott sort.
+    </para>
+
+    <para>
+      Egy előző fejezetben megismerkedhettünk a Java egyik furcsaságával,hogy egy adott számintervallumból a számokat egy cache-ből veszi elő, aminek köszönhetően elsőre megmagyarázhatatlan problémába ütköztünk. A megoldásunk nagyon hasonló lesz az előbb emlitett esethez. Itt most a Strin intering fog segiteni rajtunk. Ez egy optimalizálást elősegitő technika, a compiler használja. Két egyforma String esetén a kód csak egy objektumot fog legenerálni, az egyforma stringek tehát ugyanazt az objektumot használják. A mi kódunkban 3 egyforma String van, de ugyanúgy fog viselkedni, mint a fent emlitett példában. A két egyenlő jel segitségével javában a két objektum referenciáját hasonlitjuk össze, ha a tartalmat akarjuk, akkor pedig az equals() függvényt használjuk.
+    </para>
+
+    <para>
+      Ha megeszközöljük a változtatást, amit a fentiekben emlitettem, akkor a harmadiknak egy új objektumot fog létrehozni, aminek az értéke megegyezik a másik két stringével, de a referenciájuk már nem azonos. Igy történhet meg a feladatban emlitett esemény.
+    </para>
+  </section>
+
+</chapter>
