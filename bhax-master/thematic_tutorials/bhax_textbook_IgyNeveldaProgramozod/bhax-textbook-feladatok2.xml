@@ -38,17 +38,5 @@
             </para>
         </xi:fallback>
     </xi:include>
-<<<<<<< HEAD
 
-   <xi:include href="bhax-textbook-feladatok2-stroustrup.xml">
-=======
-    <xi:include href="bhax-textbook-feladatok2-chomsky.xml">
->>>>>>> ad048e2e46e2d29676b9e0fac359c2e0e2141423
-        <xi:fallback>
-            <para>
-                <emphasis>XInclude: bhax-textbook-motto.xml file not found</emphasis>
-            </para>
-        </xi:fallback>
-    </xi:include>
-            
 </part>  
