@@ -1,0 +1,258 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Gödel!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+
+    <section>
+        <title>C++11 Custom Allocator</title>
+        <para>
+            https://prezi.com/jvvbytkwgsxj/high-level-programming-languages-2-c11-allocators/ a
+        CustomAlloc-os példa, lásd C forrást az UDPROG repóban!
+        </para>
+        
+
+
+        <para>
+          Az allokátor az a C++ komponens, amely segítségével képesek vagyunk egy új objektumnak megfelelő tárhelyet foglalni, erre a legjobb példa a new allokátor, ami az előző feladatokban többször is előfordult.
+          Ebben a feladatban az a célunk, hogy egy saját, egyedi allokátort irjunk C++11-ben. 
+ </para>
+
+        <programlisting>
+        <![CDATA[
+        #include <iostream>
+        #include <string>
+        #include <vector>
+
+        template<typename T>
+            class CustomAlloc{
+            
+                public:
+                    using size_type = size_t;
+                    using pointer = T*;
+                    using const_pointer = const T*;
+                    using value_type = T;
+           
+        ]]>
+        </programlisting>
+
+        <para>
+          
+     A fenti sorokban létrehozunk egy CustomAlloc nevű osztályt, ez lesz az egyedi allokátorunk majd, és ezt egy template nevű általános osztályba tesszük. Az általános osztályok egyik tulajdonsága, hogy a forditó generálja az adott tipusra az osztályt.
+     Térjünk vissza a CustomAlloc osztályunkhoz, itt a public részben deklarálunk változókat, amelyeket a program során használni fogunk.
+        </para>
+
+        <programlisting>
+        <![CDATA[
+        pointer allocate(size_type n){
+
+            
+            return reinterpret_cast<pointer>( new char [n*sizeof(value_type)]);
+        }
+        ]]>
+        </programlisting>
+        
+        <para>
+Ezek után szükségünk lesz egy pointer függvényre, ami egy számot fog megkapni paraméterként. Ez az n szám jelzi, hogy hány objektumnak kell tárhelyet foglalnunk. A végén egy return szerepel, ami a lefoglalt memóriát adja vissza, úgy, hogy reinterpretálja az osztályt.
+      </para>
+
+        <programlisting>
+        <![CDATA[
+        void deallocate(pointer p, size_type n){
+            
+          
+            
+            delete [] reinterpret_cast<char *>(p);
+        }
+        ]]>
+        </programlisting>
+        
+        <para>
+Ha az objektumra, aminek lefoglaltuk a memóriát, már nincs szükségünk, törölnünk kell azt, tehát a lefoglalt tárhelyet is fell kell szabadítani. Erre a problémára nyújt megoldást a deallocate függvény. itt egy egyszerű dekete van, ami tömbösen szabadit fel memóriát.
+</para>
+
+        <programlisting>
+        <![CDATA[
+        int main(){
+    
+            std::string s;
+            std::allocator<int> a;
+            
+            std::vector<int, CustomAlloc<int>> v;
+            
+            v.push_back(15);
+            v.push_back(92);
+            v.push_back(65);
+            v.push_back(65);
+
+            return 0;
+        }
+        ]]>
+        </programlisting>
+        
+        <para>
+A main függvényben létrehozunk egy stringet és egy allokátort, ezek után egy vektort, amire a saját allokátorunkat hivjuk meg. a következő sorokban ebbe a vektorba fogunk értékeket tolni, ezek az értékek a következőek: 15, 92, 65, 65.
+      </para>
+
+
+    </section>
+
+    <section>
+        <title>Prolog családfa</title>
+
+        <para>
+            Ágyazd be a Prolog családfa programot C++ vagy Java programba! Lásd para_prog_guide.pdf!
+        </para>
+
+        <para>
+            A feladat megoldásához a SWISH SWI-Prolog online tool-ját használtam. Ez a program segit a Prologos tudások elmélyítésében, illetve egy remek alkalmazás az ilyen tipusu feladatok megoldására. Még egy nagy pozitivuma, hogy nincs szükség semmilyen külső programra, mindent el tudunk érni a weboldalon.
+            Annyit azért érdemes tudni a prologról, hogy ez egy programozási nyelv, ami szoros kapcsolatban van a mesterséges inteligenciával. A feladat megoldásához Bátfai Norbert Esport Nyelv Paszigráfia Rapszódia című pdfét használtam fel. Innen származik a példakód is amit az alábbiakban fogok felhasználni:
+        </para>
+        <programlisting>
+        <![CDATA[
+        férfi(nándi).
+        férfi(matyi).
+        férfi(norbi).
+        férfi(dodi).
+        férfi(joska).
+        nő(gréta).
+        nő(erika).
+        nő(kitti).
+        nő(marica).
+        gyereke(nándi, norbi).
+        gyereke(matyi, norbi).
+        gyereke(gréta, norbi).
+        gyereke(nándi, erika).
+        gyereke(matyi, erika).
+        gyereke(gréta, erika).
+        gyereke(norbi, dodi).
+        gyereke(norbi, kitti).
+        gyereke(erika, joska).
+        gyereke(erika, marica).
+        apa(X) :- férfi(X), gyereke(_Y, X).
+        apja(X, Y) :- férfi(X), gyereke(Y, X).
+        anya(X) :- nő(X), gyereke(_Y, X).
+        anyja(X, Y) :- nő(X), gyereke(Y, X).
+        nagyapa(X) :- apja(X, Y), (apja(Y, _U); anyja(Y, _Z)).
+        nagyapja(X, Z) :- apja(X, Y), (apja(Y, Z); anyja(Y, Z)).
+        szülő(X) :- apa(X); anya(X).
+        szülője(X, Y) :- apja(X, Y); anyja(X, Y).
+        testvér(X, Y) :- szülője(Z, X), szülője(Z, Y),
+        szülője(U, X), szülője(U, Y), X\=Y, U\=Z.
+        féltestvér(X, Y) :- szülője(Z, X), szülője(Z, Y), X\=Y,
+        \+ testvér(X, Y).
+        unokatestvér(X, Y) :- szülője(Z, X), szülője(U, Y), X\=Y,
+        (testvér(Z, U); féltestvér(Z, U)).
+        őse(X, Y) :- szülője(X, Y); (szülője(X, Z), őse(Z, Y)).
+        ]]>
+        </programlisting>
+    
+        <para>
+A fenti sorok egy kicsit zavarosak lehetnek, nem is igazán tűnnek program kódoknak. A fenti részben a zárójelen belüli tagok entitások, ami előttük szerepel az pedig a tulajdonságuk, például a dodi nevű entitás férfi tulajdonságokkal bir. Ezek úgynevezett szabályok. Aonban vannak állitások, ilyen például a gyereke(x,y) alakú sorok, ezek állitják, hogy x entitás y entitás gyereke.
+
+</para>
+
+        <para>
+Ezek után következnek szabályok, mint például az apa(X) :- férfi(X), gyereke(_Y, X). Ez azt mondja ki, hogy valaki akkor lehet apa, ha férfi és létezik olyan entitás aki a gyereke. Rengeteg ilyen szabály figyelhető meg, a teljesség igénye nélkül megemlitek még párat:
+</para>  
+              <para>
+Valaki akkor lehet nagyapa, ha az entitás az apja valakinek, aki szintén apja vagy anyja egy entitásnak. Ez a nagyapja(X, Z) :- apja(X, Y), (apja(Y, Z); anyja(Y, Z)) sor.
+      </para>
+        <para>
+Egy entitás akkor a testvére egy másik entitásnak, ha azonos az apjuk és az anyjuk. Ha csak az egyik azonos akkor féltestérek.
+        </para>
+        <para>
+Ezek után különbőző teszteket is el lehet végezni a megirt programban, leellenőrizhetjük például hogy a dodi entitás apa e vagy sem, vagy hogy a norbi és matyi entitások testvérek e. </para>
+        
+
+        
+        <para>
+          
+            A c++ kód létrehozásához segitséget nyújt a következő <link xlink:href="https://github.com/abudnik/tcalc">
+                <filename>github </filename> 
+            </link> link, ahol egy példaprogramot is találhatunk.
+        </para>
+        
+        
+    </section> 
+    
+    
+
+    <section>
+        <title>STL map érték szerinti rendezése</title>
+        <para>
+            Megoldás forrrása: <link xlink:href="https://github.com/nbatfai/future/blob/master/cs/F9F2/fenykard.cpp#L180">
+                <filename>itt</filename> </link>található.
+        </para>
+        
+        <para>
+  A feladat célja, elrendezzünk egy map-et, annak értékei szerint elrendezve. A map egy heterogén adatszerkezet, kulcs értékpárok tárolására alkalmas.
+      </para>
+
+        <para>
+            A forráskód:
+        </para>
+
+        <programlisting>
+            <![CDATA[
+            std::vector<std::pair<std::string, int>> sort_map ( std::map <std::string, int> &rank )
+            {
+                    std::vector<std::pair<std::string, int>> ordered;
+
+                    for ( auto & i : rank ) {
+                            if ( i.second ) {
+                                    std::pair<std::string, int> p {i.first, i.second};
+                                    ordered.push_back ( p );
+                            }
+                    }
+
+                    std::sort (
+                            std::begin ( ordered ), std::end ( ordered ),
+                    [ = ] ( auto && p1, auto && p2 ) {
+                            return p1.second > p2.second;
+                    }
+                    );
+
+                    return ordered;
+            }
+            ]]>
+        </programlisting>
+
+        <para>
+          A fenti kódban az ordered vector fogja eltárolni a fentebb említett kulcs értékpárokat, ezek lesznek a vektor rekordjai. Egy for ciklust használunk ennek a vektornak a feltöltésére, és mivel a feladat arra kért minket, hogy rendezve legyenek ezek az értékek, ezt is el kell végeznünk. Ez a rendezés a sort függvényben fog megtörténni, érték szerint csökkenő sorrendben lesznek elrendezve. Fontos megemliteni, hogy mindig csak két rekordot vizsgálunk rendezéskor, és ha megtaláljuk egy adott elem helyét, oda beszúrjuk. Végül az ordered vektort visszaadjuk a return függvény segitségével.
+   </para>
+
+        
+    </section>
+
+
+  
+
+
+
+    
+    <section>
+        <title>EPAM: LinkedList vs ArrayList</title>
+        <para>
+Mutass rá konkrét esetekre amikor a Java-beli LinkedList és ArrayList rosszabb performanciát eredményezhet a másikhoz képest. (Lásd még LinkedList és ArrayList forráskódja). Végezz méréseket is. (mit csinál
+az ArrayList amikor megtelik)
+        </para>
+        
+        <para>
+           Először is tudnunk kéne, hogy ez a két fogalom mit is takar: Javában az ArrayList egy vektor megfelelője, mig a LinkedList, a nevéből is megállapithatóan, egy kétszeresen láncolt lista, tehát lehet előre és hátra is haladni benne. Egy tömbben az elemek egymást követik a memóriában, egy listában azonban ez nem feltétlenül igaz, ugyanis ez mutatókat használ, hogy egyik elemről a másikra jusson.
+           
+        </para>
+
+        <para>
+Ezt figyelembe véve rájöhetünk, hogy a tömbben hamarabb el tudjuk érni az adott sorszámú elemet, mint listában, ahol nem tudunk egyből az x-edik elemhez ugrani, végig kell mennünk a listán.
+      </para>
+        <para>
+Mig keresni sokkal egyszerűbb egy tömbben, új elemet beszúrni vagy éppen törölni már nem. Egy listában ha törlünk egy elemet, csak 2 pointert kell kell átirnunk, mig egy tömbben az el kell csúsztatnunk minden utánna következő elemet eggyel hátrébb. Ha az utolsó elemet akarjuk törölni, akkor nincs nagy probléma tömbben sem, de bármelyik másik esetén, a folyamat sokkal erőforrásigényesebb lesz mint például egy listában.
+        </para>
+
+    </section>  
+    
+
+</chapter>
