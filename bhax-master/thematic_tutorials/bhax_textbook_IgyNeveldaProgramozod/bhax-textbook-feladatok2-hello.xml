@@ -1,0 +1,270 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, !</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+
+    <section>
+        <title>SamuCam</title>
+        <para>
+            Mutassunk rá a webcam (pl. Androidos mobilod) kezelésére ebben a projektben:
+        <link xlink:href="https://github.com/nbatfai/SamuCam">
+                <filename>https://github.com/nbatfai/SamuCam</filename></link>
+        </para>
+        
+        <para>
+A feladatban egy webkamera kezelésének bemutatása a dolgunk a Samu projektben. A Samu projekt openCV-t használ a már említett kamera kezeléséhez. A kamera kezelését a SamuCam.cpp-ben találhatjuk meg, ez a cpp a fent említett github adattárban található meg. A forrás:
+</para>
+        <programlisting>
+        <![CDATA[
+        #include "SamuCam.h"
+
+        SamuCam::SamuCam ( std::string videoStream, int width = 176, int height = 144 )
+          : videoStream ( videoStream ), width ( width ), height ( height )
+        {
+          openVideoStream();
+        }
+
+        SamuCam::~SamuCam ()
+        {
+        }
+
+        void SamuCam::openVideoStream()
+        {
+          //videoCapture.open ( videoStream );
+          videoCapture.open ("/dev/video0");
+          videoCapture.set ( CV_CAP_PROP_FRAME_WIDTH, width );
+          videoCapture.set ( CV_CAP_PROP_FRAME_HEIGHT, height );
+          videoCapture.set ( CV_CAP_PROP_FPS, 10 );
+        }
+        ]]>
+        </programlisting>
+        <para>
+A fenti kódrész a SamuCam.h header hozzáadásával kezdődik, ez után láthatunk egy konstruktort, ahol a videoStream megkapja a szélesség és magasság értékeket, amiket mi adtunk meg. Ezek után láthatunk egy destruktort is, ez a példány törlésére lesz alkalmas. Végül az openVideoStream függvényt láthatjuk, aminek a feladata az általunk beállított video device megnyitása lesz, és ennek a megfelelő kalibrálása. A következő sorokban láthatjuk, hogy megkapja a szélesség, magasság és FPS (Frame Per Second) értékeket, amivel majd dolgozni fog. Ez a függvény meghívásra kerül már a konstruktorban is.
+      </para>
+        <programlisting>
+        <![CDATA[
+        void SamuCam::run()
+        {
+
+          cv::CascadeClassifier faceClassifier;
+
+          std::string faceXML = "lbpcascade_frontalface.xml";
+
+          if ( !faceClassifier.load ( faceXML ) )
+            {
+              qDebug() << "error: cannot found" << faceXML.c_str();
+              return;
+            }
+        ]]>
+        </programlisting>
+        <para>
+Létrehozunk egy run függvényt, amiben egy openCV-ben fellelhető osztályt használunk, a CascadeClassifier egy faceClassifier nevű példánnyal. Ezt használva tudjuk majd ellenőrizni, hogy be tudjuk e olvasni az xml-t. Az előbb említett xml-t egy stringbe tesszük bele, ez a string a faceXML. Az xml rengeteg kép és annak feldologzását tárolja, ezt töltjük bele a faceClassifierbe, hogy fel tudja majd ismerni az arcokat. Ha nem sikerül a betöltés, visszadob egy hibaüzenetet a program.
+</para>
+        <programlisting>
+        <![CDATA[
+              cv::Mat frame;
+
+      while ( videoCapture.isOpened() )
+        {
+
+          QThread::msleep ( 50 );
+          while ( videoCapture.read ( frame ) )
+            {
+
+              if ( !frame.empty() )
+                {
+
+                  cv::resize ( frame, frame, cv::Size ( 176, 144 ), 0, 0, cv::INTER_CUBIC );
+
+                  std::vector<cv::Rect> faces;
+                  cv::Mat grayFrame;
+
+                  cv::cvtColor ( frame, grayFrame, cv::COLOR_BGR2GRAY );
+                  cv::equalizeHist ( grayFrame, grayFrame );
+
+                  faceClassifier.detectMultiScale ( grayFrame, faces, 1.1, 4, 0, cv::Size ( 60, 60 ) );
+
+                  if ( faces.size() > 0 )
+                    {
+
+                      cv::Mat onlyFace = frame ( faces[0] ).clone();
+
+                      QImage* face = new QImage ( onlyFace.data,
+                                                  onlyFace.cols,
+                                                  onlyFace.rows,
+                                                  onlyFace.step,
+                                                  QImage::Format_RGB888 );
+
+                      cv::Point x ( faces[0].x-1, faces[0].y-1 );
+                      cv::Point y ( faces[0].x + faces[0].width+2, faces[0].y + faces[0].height+2 );
+                      cv::rectangle ( frame, x, y, cv::Scalar ( 240, 230, 200 ) );
+
+
+                      emit  faceChanged ( face );
+                    }
+
+                  QImage*  webcam = new QImage ( frame.data,
+                                                 frame.cols,
+                                                 frame.rows,
+                                                 frame.step,
+                                                 QImage::Format_RGB888 );
+
+                  emit  webcamChanged ( webcam );
+
+                }
+
+              QThread::msleep ( 80 );
+
+        }
+
+            if ( ! videoCapture.isOpened() )
+        {
+          openVideoStream();
+        }
+
+        ]]>
+        </programlisting>
+        <para>
+            A fenti kódrész a kamera képének megjelenítésével foglalkozik. Egy while ciklus segítségével, amig nyitva van a videoCaptureban tárolt eszköz addig elvégzi a következőket: egy hasonló while ciklus segitségével beolvassa a képkockákat és átméretezi őket a megadott méretek alapján. Ezek után a képet átalakítjuk szürkévé, majd az equalizeHist utasítással kiegyenlitjük a szürkeskála hisztogramját. Ha ezt elvégezte a program, következhet az emberi arc felismerése. Ezt a detectMultiScale függvény segitségével teszi meg, ami felismeri a képen látható objektumokat, egy téglalap alakú objektumként adja vissza. Ha felismert egy arcot, létrehozunk egy QImage objektumot, ahol eltároljuk az arc koordinátáit, majd a rectangle utásitásra kirajzolja az arcot. A kód végén látható if függvény megnyitja a VideoStreamet, ha az nem volt megnyitva.
+        </para>
+        <para>
+Sajnálatos módon nem tudom teljes mértékben bemutatni a programot futás közben, ugyanis az Ubuntu nem tudta felismerni és használni a webkamerámat. Az alábbi képen láthatjuk, hogyan is nézne ki a program.
+</para>
+        <figure>
+            <title>SamuCam</title>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="img/samucam.png" scale="10" />
+                </imageobject>
+                <textobject>
+                    <phrase>SamuCam, futás közben</phrase>
+                </textobject>
+            </mediaobject>
+        </figure>
+    </section>
+
+    <section>
+        <title>OOCWC Boost ASIO hálózatkezelése</title>
+        <para>
+            Mutassunk rá a scanf szerepére és használatára! 
+        <link xlink:href="https://github.com/nbatfai/robocar-emulator/blob/master/justine/rcemu/src/carlexer.ll">
+                <filename>ez a forrás</filename></link>
+        </para>
+        
+
+        <para>
+            A feladat célja, hogy megismerjük a scanf szerepét az alábbi kódban.
+        </para>
+        <programlisting>
+        <![CDATA[
+        std::sscanf(yytext, "<init %s %d %c>", name, &num, &role);
+                  if(num >200)
+                  {
+                    m_errnumber = 1;
+                    num = 200;
+                  }
+                  m_cmd = 1;
+        ]]>
+    </programlisting>
+        <para>
+Fent nem a teljes forrás látható, csak az a rész, ahol a scanf használatára sor kerül. A scanf formázott adatot olvas egy stringből. Először a forrást kell megadni, azt a stringet amit szeretnénk ha olvasna, ez a fenti kódban az yytext. Ezek után meg kell adni a mintát,  ezek után pedig azokat a változókat adjuk meg, ahová el kell tárolja majd a beolvasott információ részleteket.
+</para>
+
+        <para>
+A mintában a %s a name változóval lesz kapcsolatban, a %d a %num-mal, mig a %c a %role-hoz fog kötődni. Ezek után ha a num nagyobb mint 200, akkor 200-ra állitjuk.
+</para>
+
+    </section>
+
+    <section>
+        <title>BrainB</title>
+        <para>
+           Mutassuk be a Qt slot-signal mechanizmust ebben a projektben: https://github.com/nbatfai/esport-
+        talent-search
+        </para>
+        
+
+        <para>
+A BeainB ismerős lehet mindenki számára, uyganis a könyv első felében már foglalkoztunk vele a 7. fejezetben, ahol a program műköését besuéltük át, és néztük meg akcióban is. Emlékeztetőül ez egy olyan program, ami az esportolók koncentrációját szeretné felmérni, sok zavaró környezeti hatás jelenlétében. A feladat most azt kéri tőlünk, hogy nézzük át a Qt slot-signalt. Ez a mechanizmus egy Signalt ad ki egy adott eseméyn teljesülésekor, amit egy slot értelmez. Ez a Qt slot-signal segit tehát az objektumok közti kommunikáció megalkotásában, hogy ezek harmóniában tudjanak dolgozni egymással.
+</para>
+        <programlisting>
+        <![CDATA[
+        connect ( brainBThread, SIGNAL ( heroesChanged ( QImage, int, int ) ),
+                  this, SLOT ( updateHeroes ( QImage, int, int ) ) );
+
+        connect ( brainBThread, SIGNAL ( endAndStats ( int ) ),
+                  this, SLOT ( endAndStats ( int ) ) );
+        ]]>
+        </programlisting>
+        <para>
+A signalt és a slotot a connect függvény kapcsolja össze, ez a BrainB-Win.cppben található. A fenti forrásrészletben két connect látható. Ha a heroesChanged kap egy jelet akkor azonnal lefut az updateHeroes, igy történik meg a hősök frissitése. Ha az endAndStats kap jelet, az meghivja az azonos nevű függvényt, ami a nevéből is itélve befejezi a programot és megadjda a statisztikákat.
+</para>
+
+    </section>
+
+    <section>
+        <title>EPAM: Titkos üzenet, száll a gépben!</title>
+        <para>
+        Implementájl egy olyan parancssori alkalmazást, amely a billentyűzetről olvas soronként ASCII
+        karakterekből álló sorokat, és a beolvasott szöveget Caesar kódolással egy txt fájlba írja soronként.
+        </para>
+        
+
+        <para>
+A Caeser kódolás Julius Caesatól ered, ő használta a fontosabb üzenetei titkositására. A kódolás lényege, hogy minden karaktert egy bizonyos számmal eltolunk az abc-ben, igy egy új szót. 
+      </para>
+        <para>
+            Egy egyszerű példa, hármas eltolás esetén: ABC -> DEF. Ezt a hármas eltolást használom a C++ kódomban is.
+        </para>
+        <programlisting>
+        <![CDATA[
+#include <iostream>
+#include<string.h>
+#include <fstream>
+using namespace std;
+ofstream A("kod.txt");
+int main()
+{
+    int kulcs=3;
+char kod[100],karakter;
+cin.getline(kod,100);
+strupr(kod);
+for(int i=0;kod[i]!='\0';i++)
+{
+karakter=kod[i];
+if(kod[i]+kulcs==91)
+karakter='A';
+if(kod[i]+kulcs==92)
+karakter='B';
+if(kod[i]+kulcs==93)
+karakter='C';
+if(kod[i]+kulcs<91 && kod[i]+kulcs>64 )
+karakter=kod[i]+kulcs;
+
+cout<<karakter<<" ";
+A<<karakter;
+
+
+    }
+    A.close();
+    return 0;
+}
+
+        ]]>
+        </programlisting>
+        <para>
+Először létrehozok egy kimeneti txt-t kod.txt néven, erre A-ként fogok hivatkozni a kódban. Ezek után deklarálunk egy kulcsot, aminek az értéke 3, ez jelenti majd az eltolások számát.
+Ezek után egy stringbe eltárolom a szöveget, és deklarálok egy karakter nevű char-t, ez fog segiteni a karakterek eltolásában.
+A strupr paranccsal minden karaktert uppercase-re állitok, hogy egyszerűbb legyen a program. Egy for ciklussal addig olvasom a szöveget, amig el nem érem a null karaktert, ami minden string végén található.
+A karakter kezdetben felveszi a kod i-edik elemét, ez azért fontos, hogy ha a karakter nem egy betű, akkor azt nem szabad megváltoztatni, tehát ha a szöveg negyedik karaktere a 3-as szám, akkor a kimenet negyedik karaktere is egy 3-as szám lesz.
+Ezek után, ha eltolás után 91,92 vagy 93-as ASCII értéket kapunk, akkor manuálisan beállitjuk a helyes betűt, ugyanis az utolsó nagybetű ASCII kódja 90. Ha ez a probléma nem áll fent, akkor egyszerűen eltoljuk az ASCII kódot.
+</para>
+        <para>
+Végül kiiratom a képrenyőre és a txt-be is az új, kódolt szöveget.</para>
+
+    </section>
+
+</chapter>
