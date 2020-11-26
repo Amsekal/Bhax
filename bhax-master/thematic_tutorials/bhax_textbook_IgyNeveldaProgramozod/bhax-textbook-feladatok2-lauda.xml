@@ -1,0 +1,269 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+    <info>
+        <title>Helló, Lauda!</title>
+        <keywordset>
+            <keyword/>
+        </keywordset>
+    </info>
+
+    <section>
+        <title>Port scan</title>
+        <para>
+            Mutassunk rá ebben a port szkennelő forrásban a kivételkezelés szerepére!
+        <link xlink:href="https://www.tankonyvtar.hu/hu/tartalom/tkt/javat-tanitok-javat/ch01.html#id527287">
+                <filename>forrás</filename></link>
+        </para>
+        
+
+        <para>
+A feladat célja, hogy megnézzük a fent említett forrásban a port szkennelőben található kivételkezelés milyen szerepet tölt be.
+        </para>
+
+        <programlisting>
+        <![CDATA[
+        public class Portscan {
+        
+            public static void main(String[] args) {
+                
+                for(int i=0; i<1024; ++i)
+                    
+                    try {
+                        
+                        java.net.Socket socket = new java.net.Socket(args[0], i);
+                        
+                        System.out.println(i + " figyeli");
+                        
+                        socket.close();
+                        
+                    } catch (Exception e) {
+                        
+                        System.out.println(i + " nem figyeli");
+                        
+                    }
+            }
+            
+        }
+        ]]>
+        </programlisting>
+        <figure>
+            <title>Portscan megfigyelés</title>
+            <mediaobject>
+                <imageobject>
+                    <imagedata fileref="img/portscan.png" scale="200" />
+                </imageobject>
+                <textobject>
+                    <phrase>Port</phrase>
+                </textobject>
+            </mediaobject>
+        </figure>
+
+      <para>
+        A program feladata, hogy a megkapott gépen megnézni az összes olyan TCP portot, aminek száma kisebb mint 1024, ebben segít a 3. sorban lévő for ciklus. A kód első sorában hozzuk létre a Portscan osztályt, a következő sorban pedig a main függvény látható. A már említett for ciklusban található egy try-catch rész. A try részt szeretné végrehajtani a kód, tehát létrehoz egy Socketet amely args0-ra próbál TCP kapcsolatot létrehozni i portra, az i értékét a for ciklusban növeljük, így végig fog menni az összes lehetséges porton. Ha sikerül létrehozni a kapcsolatot, akkor kiirjuk az adott portot és mellé a "figyeli" szót. Ezt azt jelenti, hogy a port nyitva van. Ha nem sikerül, kivétel képződik, ezt kapja majd el a catch és kiirjuk a port számát és a "nem figyeli" üzenetet. 
+</para>
+    </section>
+
+    <section>
+        <title>Junit teszt</title>
+        <para>
+                A <link xlink:href="https://progpater.blog.hu/2011/03/05/labormeres_otthon_avagy_hogyan_dolgozok_fel_egy_pedat">
+                <filename>https://progpater.blog.hu/2011/03/05/labormeres_otthon_avagy_hogyan_dolgozok_fel_egy_pedat</filename></link>
+            poszt kézzel számított mélységét és szórását dolgozd be egy Junit tesztbe (sztenderd védési feladat
+            volt korábban).
+            A feladat megoldása továbbá is az adott mappában található, pontosabban <link xlink:href="prog2/lauda/JunitTest.java">
+                <filename>Itt található</filename>
+            </link>
+        </para>
+        
+        <para>
+ Ebben a feladatban egy jUnit teszt létrehozása a célunk, ami abban segít, hogy leellenőrizzük, helyesek e a kiszámolt eredmények. Hogy ezt megvalósítsuk szükségünk lesz az előző fejezetben megírt java kódunkra, amiből a Class részt egy Package-be teszünk.
+        </para>
+
+        <programlisting>
+        <![CDATA[
+        package BinFa;
+
+
+        public class JunitTest {
+
+            LZWBinFa binfa = new LZWBinFa(); 
+            @org.junit.Test
+
+            public void test() {
+                String input = "01111001001001000111"; 
+                for (char c : input.toCharArray()) { 
+                    binfa.addCsomopont(c); 
+                    }
+                org.junit.Assert.assertEquals(4, binfa.getMelyseg(), 0.0); 
+                org.junit.Assert.assertEquals(2.75, binfa.getAtlag(), 0.001);
+                org.junit.Assert.assertEquals(0.957427, binfa.getSzoras(), 0.0001);
+            }
+        }
+        ]]>
+        </programlisting>
+        <para>
+Első lépésben az elkészitett package-et hozzáadjuk a programkódhoz, majd létrehozunk egy JuniTest nevű osztályt. Az osztályban példányositunk egy binfát, majd jöhet a test függvény. Itt láthatunk egy Stringet, amiben elmentjük azt a bitsort, amit le kell majd ellenőrizni. Ezután egy for ciklusban végigmegyünk a megadott stringen, és bitenként hozzáadjuk a fához, erre az addCsomopont függvényre támaszkodunk. Ha ezzel végzett a program, az org.junit.Assert.assertEquals-t felhasználva teszteli az eredményeket. Az első paraméter érték az általunk megadott érték lesz, a második a program által kiszámolt érték, a harmadik pedig a megengedett eltérés, érthetően ezt minél kisebbre állitjuk, hogy tudjuk, pontos e a számitásunk. Először a mélységet ellenőrizzük, majd az átlagot és a szórást.
+        </para>
+
+
+    </section>
+
+    <section>
+        
+        <title>EPAM: JSON szerializáció</title>
+
+      <para>
+        Implementálj egy JSON szerializációs könyvtárat, mely képes kezelni sztringeket, számokat, listákat
+        és beágyazott objektumokat. A megoldás meg kell feleljen az összes adott unit tesztnek.
+
+      </para>
+      <para>
+
+        
+        A feladat megoldásához Az EPAM github tárában található forrást vettem igénybe:  <link xlink:href="https://github.com/epam-deik-cooperation/epam-deik-prog2/tree/master/week-8/json-serialization">
+          <filename>Forrás</filename>
+        </link>
+      </para>
+      <para>
+        Szerialiazáció alatt egy objektum átalakitását értjük egy byte sorozattá. Ez a folyamat hasznos a külső tároláskor. A JSON szabványában hat adattipus tárolható, ezek a: 
+      </para>
+      <para>
+Null
+      </para>
+      <para>
+Szám
+      </para>
+      <para>
+String
+      </para>
+      <para>
+Boolean
+      </para>
+      <para>
+Tömb
+      </para>
+      <para>
+Objektum
+      </para>
+      <para>
+A megoldás forrásában az adattipusokhoz külön osztály tartozik, amik egy interfészt implementálnak. Lesz egy ExampleData osztályunk, amelyben létrehozunk egy belső osztályt InnerData névvel. A belső osztálynak köszönhetően az ExampleData rendelkezni fog belső objektumokkal, a serialize metódussal ezeknek a belső objektumoknak vizsgáljuk meg a tulajdonságait.
+      </para>
+      <para>
+Láthatunk még egy MiniObjectMappert is, aminek feladata 2 lista létrehozása. A toJson végzi el az objektumok szerializációját. Hogy ezt végre tudja hajtani, felhasználja a MainSerializert, ez megvizsgálja az objektum típusát, ami az elöbb felsorolt hat típus közül lesz majd az egyik, és ennek megfelelően egy megfelelő serializert fog hozzá csatolni.
+      </para>
+
+    </section>
+
+    <section>
+        <title>EPAM: Kivételkezelés</title>
+        
+        <para>
+            Adott az alábbi kódrészlet. Mi történik, ha az input változó 1F, “string” vagy pedig null? Meghívódik
+        e minden esetben a finally ág? Válaszod indokold!
+        </para>
+        
+
+
+        <para>
+          A feladat megoldásához Az EPAM github tárában található forrást vettem igénybe:  <link xlink:href="https://github.com/epam-deik-cooperation/epam-deik-prog2/tree/master/week-8/exception-handling/src/main/java/com/epam/training">
+                <filename>Forrás</filename></link>
+        </para>
+
+        <para>
+Először nézzük meg a ChildException.java és a ParentException.java forrásokat
+        </para>
+
+        <programlisting>
+        <![CDATA[
+        package com.epam.training;
+
+        public class ChildException extends ParentException {
+
+        }
+        ]]>
+        </programlisting>
+
+        <programlisting>
+        <![CDATA[
+        package com.epam.training;
+
+        public class ParentException extends RuntimeException {
+
+        }
+        ]]>
+        </programlisting>
+
+        <para>
+Észrevehető, hogy az első két forrás igen rövid, nem tartalmaz túl sok kódot. Az első forrásban a ChildException osztály örökli a ParentException osztály tulajdonságait, a következő forrásban pedig a ParentException örökli a RuntimeException osztály tulajdonságait. Térjünk át a harmadik forrásra, az ExceptionHandling.java-ra.
+        </para>
+
+        <programlisting>
+        <![CDATA[
+        package com.epam.training;
+
+        public class ExceptionHandling {
+
+            public static void main(String[] args) {
+                System.out.println("Test case when input is null!");
+                test(null);
+
+                try {
+                    System.out.println("Test case when input is float!");
+                    test(1F);
+                } catch (Exception ignored) {
+                    
+                    System.out.println("ignored\n");
+                }
+
+                System.out.println("Test case when input is String!");
+                test("string");
+            }
+
+            private static void test(Object input) {
+                try {
+                    System.out.println("Try!");
+                    if (input instanceof Float) {
+                        throw new ChildException();
+                    } else if (input instanceof String) {
+                        throw new ParentException();
+                    } else {
+                        throw new RuntimeException();
+                    }
+                } catch (ChildException e) {
+                    System.out.println("Child Exception is caught!");
+                    if (e instanceof ParentException) {
+                        throw new ParentException();
+                    }
+                } catch (ParentException e) {
+                    System.out.println("Parent Exception is caught!");
+                    System.exit(1);
+                } catch (Exception e) {
+                    System.out.println("Exception is caught!");
+                } finally {
+                    System.out.println("Finally!\n");
+                }
+            }
+
+        }
+        ]]>
+        </programlisting>
+
+        <para>
+A kód első soraiban található meg az ExceptionHandling osztály. Az ebben az osztályban található main függvény tartalmazza a különböző eseteket. Az első eset, amikor az inputbóll Null értéket kapunk. A második eset, amikor egy float értéket ad át az input, mig a harmadik esetben egy stringet kapunk. Minden esetben meghívódik egy test függvény, ami a késöbbiekben lesz deklarálva.
+A második esetben, ha float értéket kapunk, akkor láthatunk egy try catch blokkot, ami egy ignore exceptiont fog elkapni. Erről majd késöbb.
+        </para>
+        <para>
+          A test függvény a legfontosabb része a programunknak. Láthatunk benne egy try-catch-finally részt. A try-ban egy kiirás után megnézzük az inputot: ha float, akkor ChildException-t fogunk dobni, ha string akkor ParentException-t, különben pedig RuntimeExceptiont-t. Az eldobott exceptiont kapja majd el a catch, és kiirja, hogy pontosan mit kapott el, ezek után a finally blokkban is kiiratunk egy üzenetet. 
+ </para>
+       
+        <para>
+Az első esetben, ha null-t kap a program, mivel nem string vagy float ezért a test-ben egy RuntimeExceptiont fogunk dobni, amit elkapunk, közben pedig kiirjuk a megfelelő üzeneteket.
+        </para>
+        <para>
+A második esetben egy floatot fogunk kapni. Még mielőtt meghivhatnánk a test függvényt bekerülünk egy másik try-catchbe. Bekerül a try-ba, ami megállapitja, hogy egy float, és meghivja a testet. Itt egy ChildExceptiont fogunk dobni és elkapni, kiirva a megfelelő üzeneteket. Mivel a Child a Parent exception példánya, egy ParentExceptiont is eldobunk, de ezt nem itt, hanem az első cathbenn kapjuk el, és kiir egy ignored szöveget.
+        </para>
+        <para>
+          A harmadik eset hasonló az elsőhöz, itt a string beolvasása után egy ParentExceptiont dobunk és kapunk el, viszont nem irja ki a Finally részben látható szöveget. Ez azért tröténhet, mert a System.exit-el kilépünk.
+ </para>
+
+    </section>
+</chapter>
