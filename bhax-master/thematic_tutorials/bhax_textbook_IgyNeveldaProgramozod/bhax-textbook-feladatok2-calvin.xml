@@ -1,0 +1,349 @@
+<chapter xmlns="http://docbook.org/ns/docbook" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xi="http://www.w3.org/2001/XInclude" version="5.0" xml:lang="hu">
+  <info>
+    <title>Helló, Calvin!</title>
+    <keywordset>
+      <keyword/>
+    </keywordset>
+  </info>
+
+  <section>
+    <title>MNIST</title>
+    <para>
+      Az alap feladat megoldása, +saját kézzel rajzolt képet is ismerjen fel,
+      <link xlink:href="https://progpater.blog.hu/2016/11/13/hello_samu_a_tensorflow-bol">
+        <filename>forrás</filename>
+      </link>
+    </para>
+
+
+
+    <para>
+Az MNIST témakörével már találkozhattunk a könyv első részében is, hasonló kontextusban. A feladatban a célunk, hogy a program felismerje a kézzel írott számokat. Ezt gépi tanulás segítségével próbálom megvalósitani. Hogy ezt elérjem, felhasználom a megadott forrást, de változtatásokat fogok végezni benne, hogy tökéletesen funkcionáljon. Három változtatást fogok eszközölni ezek a következőek:
+    </para>
+
+
+    <para>
+Az eredeti kódhoz képest kevés változtatás látszik, annyi történt, hogy az y-t eltároljuk a logits-ban, az y_-t pedig a labels-ben.
+    </para>
+
+    <programlisting>
+      <![CDATA[
+        	cross_entropy= tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits = y, labels=y_))
+        ]]>
+    </programlisting>
+
+    <para>
+Ezek után szükséges megadnunk azt is, hogy hány szincsatorna van a képen. Ide egy 1-est irunk, ami azt jelzi, hogy a képen egy szincsatorna van jelen, tehát szürkeskálás kép.
+    </para>
+
+    <programlisting>
+      <![CDATA[
+        	def readimg():
+			    file = tf.io.read_file("kep.png")
+			    img = tf.image.decode_png(file,1)
+			    return img
+        ]]>
+    </programlisting>
+
+    <para>
+Az utolsó változtatás pedig azt oldja meg, hogy saját képet ismerjen fel. Az előbb átirt readimg függvényben adjuk majd meg a képünk elérési útvonalát. Fontos hogy a beolvasott kép megfelelő méretekkel rendelkezzen, ezt oldja meg a következő sor. Ahogy a kódból is olvasható, a kép 28x28 pixeles kell legyen.
+    </para>
+    <programlisting>
+      <![CDATA[
+        image = image.reshape(28*28)
+        ]]>
+    </programlisting>
+
+    <para>
+Ha ezeket a változtatásokat elvégeztük, akkor a programnak fel kell ismernie a megadott képeken szereplő számokat, felismeri a test_image képen a 4-es számot, tehát az alapfeladatot megoldottuk, és az általunk leirt számot is, a plussz feladat része is elkészült.
+    </para>
+
+
+
+
+
+    <para>
+     Lentebb megtalálható a teljes forráskód, az általam elvégzett módosításokkal együtt:
+    </para>
+
+    <programlisting>
+      <![CDATA[
+		# Norbert Batfai, 27 Nov 2016
+		# Some modifications and additions to the original code:
+		# https://github.com/tensorflow/tensorflow/blob/r0.11/tensorflow/examples/tutorials/mnist/mnist_softmax.py
+		# See also http://progpater.blog.hu/2016/11/13/hello_samu_a_tensorflow-bol
+		# ==============================================================================
+
+		"""A very simple MNIST classifier.
+		See extensive documentation at
+		http://tensorflow.org/tutorials/mnist/beginners/index.md
+		"""
+		from __future__ import absolute_import
+		from __future__ import division
+		from __future__ import print_function
+
+		import argparse
+
+		# Import data
+		from tensorflow.examples.tutorials.mnist import input_data
+
+		import tensorflow as tf
+
+		import matplotlib.pyplot
+
+
+		FLAGS = None
+
+
+		def readimg():
+		    file = tf.io.read_file("kep.png")
+		    img = tf.image.decode_png(file,1)
+		    return img
+
+		def main(_):
+		  mnist = input_data.read_data_sets(FLAGS.data_dir, one_hot=True)
+
+		  # Create the model
+		  x =  tf.placeholder(tf.float32, [None, 784])
+		  W = tf.Variable(tf.zeros([784, 10]))
+		  b = tf.Variable(tf.zeros([10]))
+		  y = tf.matmul(x, W) + b
+
+		  # Define loss and optimizer
+		  y_ = tf.placeholder(tf.float32, [None, 10])
+
+		  # The raw formulation of cross-entropy,
+		  #
+		  #   tf.reduce_mean(-tf.reduce_sum(y_ * tf.log(tf.nn.softmax(y)),
+		  #                                 reduction_indices=[1]))
+		  #
+		  # can be numerically unstable.
+		  #
+		  # So here we use tf.nn.softmax_cross_entropy_with_logits on the raw
+		  # outputs of 'y', and then average across the batch.
+		  cross_entropy= tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits = y, labels=y_))
+
+		  train_step = tf.train.GradientDescentOptimizer(0.5).minimize(cross_entropy)
+
+		  sess = tf.compat.v1.InteractiveSession()
+		  # Train
+		  tf.compat.v1.global_variables_initializer().run()
+		  print("-- A halozat tanitasa")  
+		  for i in range(1000):
+		    batch_xs, batch_ys = mnist.train.next_batch(100)
+		    sess.run(train_step, feed_dict={x: batch_xs, y_: batch_ys})
+		    if i % 100 == 0:
+		      print(i/10, "%")
+		  print("----------------------------------------------------------")
+
+		  # Test trained model
+		  print("-- A halozat tesztelese")  
+		  correct_prediction = tf.equal(tf.argmax(y, 1), tf.argmax(y_, 1))
+		  accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))  
+		  print("-- Pontossag: ", sess.run(accuracy, feed_dict={x: mnist.test.images, y_: mnist.test.labels}))
+		  print("----------------------------------------------------------")
+		  
+		  print("-- A MNIST 42. tesztkepenek felismerese, mutatom a szamot, a tovabblepeshez csukd be az ablakat")
+		  
+		  img = mnist.test.images[42]
+		  image = img
+
+		  matplotlib.pyplot.imshow(image.reshape(28, 28), cmap=matplotlib.pyplot.cm.binary)
+		  matplotlib.pyplot.savefig("4.png")  
+		  matplotlib.pyplot.show()
+
+		  classification = sess.run(tf.argmax(y, 1), feed_dict={x: [image]})
+
+		  print("-- Ezt a halozat ennek ismeri fel: ", classification[0])
+		  print("----------------------------------------------------------")
+
+		  print("-- A sajat kezi 8-asom felismerese, mutatom a szamot, a tovabblepeshez csukd be az ablakat")
+
+		  img = readimg()
+		  image = img.eval()
+		  image = image.reshape(28*28)
+		  
+
+		  matplotlib.pyplot.imshow(image.reshape(28, 28), cmap=matplotlib.pyplot.cm.binary)
+		  matplotlib.pyplot.savefig("8.png")  
+		  matplotlib.pyplot.show()
+
+		  classification = sess.run(tf.argmax(y, 1), feed_dict={x: [image]})
+
+		  print("-- Ezt a halozat ennek ismeri fel: ", classification[0])
+		  print("----------------------------------------------------------")
+
+		if __name__ == '__main__':
+		  parser = argparse.ArgumentParser()
+		  parser.add_argument('--data_dir', type=str, default='/tmp/tensorflow/mnist/input_data', help='Directory for storing input data')
+		  FLAGS = parser.parse_args()
+		  tf.compat.v1.app.run()
+        ]]>
+    </programlisting>
+
+  </section>
+
+  <section>
+    <title>Deep MNIST</title>
+    <para>
+      Mint az előző, de a mély változattal. Segítő ábra, vesd össze a forráskóddal a
+      <link xlink:href="https://arato.inf.unideb.hu/batfai.norbert/NEMESPOR/DE/denbatfai2.pdf">
+        <filename>forrás</filename>
+      </link>
+    </para>
+
+
+    <para>
+      A feladat megoldásaként a Magas szintű programozási nyelvek-1 tantárgy alatt bemutatott kódot használtam fel, amit Besenczi Renátónak köszönhetek. A megoldás itt található meg: <link xlink:href="https://github.com/rbesenczi/BHAXBook/tree/master/Schwarzenegger/MNIST">
+        <filename>megoldás</filename>
+      </link>
+    </para>
+
+    <para>
+A program célja ugyanaz, mint az előző feladatban, mégpedig hogy felismerjen egy képet, és eldöntse, hogy mit is lát rajta. Nézzük meg először a forrást, aztán pedig azt, hogy hogyan működik.
+    </para>
+
+    <programlisting>
+      <![CDATA[
+        import tensorflow as tf
+		from tensorflow.keras.models import Sequential
+		from tensorflow.keras.layers import Dense, Conv2D, Dropout, Flatten, MaxPooling2D
+
+		from PIL import Image
+		import numpy as np
+		import sys
+
+		physical_devices = tf.config.experimental.list_physical_devices('GPU')
+		assert len(physical_devices) > 0, "Not enough GPU hardware devices available"
+		tf.config.experimental.set_memory_growth(physical_devices[0], True)
+
+		(x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
+
+		x_train = x_train.reshape(x_train.shape[0], 28, 28, 1)
+		x_test = x_test.reshape(x_test.shape[0], 28, 28, 1)
+		x_train = x_train.astype('float32')
+		x_test = x_test.astype('float32')
+		x_train /= 255
+		x_test /= 255
+
+		model = Sequential()
+		model.add(Conv2D(28, kernel_size=(3,3), input_shape=(28, 28, 1)))
+		model.add(MaxPooling2D(pool_size=(2, 2)))
+		model.add(Flatten())
+		model.add(Dense(128, activation=tf.nn.relu))
+		model.add(Dropout(0.2))
+		model.add(Dense(10,activation=tf.nn.softmax))
+
+		tb_log_dir = "./cnn_tb"
+		file_writer = tf.summary.create_file_writer(tb_log_dir)
+		file_writer.set_as_default()
+		tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=tb_log_dir, profile_batch=0)
+
+		model.compile(optimizer='adam', 
+		              loss='sparse_categorical_crossentropy', 
+		              metrics=['accuracy'])
+
+		model.fit(x=x_train,y=y_train, epochs=10, callbacks=[tensorboard_callback])
+
+		model.evaluate(x_test, y_test)
+
+		input_image = np.array(Image.open(sys.argv[1]).getdata(0).resize((28, 28), 0))
+
+		pred = model.predict(input_image.reshape(1, 28, 28, 1))
+
+		print (pred)
+
+		print("The number is = ", pred.argmax())
+        ]]>
+    </programlisting>
+
+    <para>
+Az első sorokban a fontos könyvtárak beimportáljuk, mint például a tensorflow-t. A program a grafikus kártya segitségével fog működni, tehát sokkal gyorsabb futási időre lehet számitani, mintha a feladatot a CPU végezné el. Az argumentumként beolvasott képet átméretezi a program, elvégzi a reshapet és a test-eket, majd a rétegek hozzáadása következik. Több réteget is hozzá fogunk adni. A filewritert beállitjuk a megfelelő adatokkal, majd a model.compile és a model.fit segitségével felépitünk egy neurális hálót, úgy, hogy a lehető legpontosabb legyen (10 epochs). Lehetne ennél pontosabbra is tanitani, de az már túltanitásnak minősül, ami nem szerencsés. Ha ez minde megvan, kiértékeljük a modelt, beállitjuk az input image argumentumait és a predict részt meghatározzuk, majd kiiratjuk. A predict, a nevéből is láthatóan lesz a program által megállapitott érték.
+    </para>
+
+
+
+  </section>
+
+  <section>
+    <title>Android telefonra a TF objektum detektálója</title>
+    <para>
+      Telepítsük fel, próbáljuk ki!
+    </para>
+
+
+    <para>
+A feladat megoldása igazán egyszerű, a dolgunk, hogy letöltsük az ingyenes Object Detector and Classifier - Tensorflow nevű applikációt, majd használjuk. Az alábbiakban pár képen keresztül mutatom be az applikációt.
+    </para>
+
+    <figure>
+      <title>Object</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="img/object.jpg" scale="30" />
+        </imageobject>
+        <textobject>
+          <phrase>Object</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+    <figure>
+      <title>Object-2</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="img/object2.jpg" scale="30" />
+        </imageobject>
+        <textobject>
+          <phrase>Object</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+    <figure>
+      <title>Object-3</title>
+      <mediaobject>
+        <imageobject>
+          <imagedata fileref="img/object3.jpg" scale="30" />
+        </imageobject>
+        <textobject>
+          <phrase>Object</phrase>
+        </textobject>
+      </mediaobject>
+    </figure>
+
+    <para>
+      Mint látható, az alkalmazás még nem működik tökéletesen, a serpenyőt két ollóként ismerte fel, a kaputelefont pedig toalettként. Viszont a harmadik képen látható, hogy képes helyesen is felismerni dolgokat. A négyzetek melletti százalék jelzi, hogy mennyire biztos a tárgy felismerése. 
+    </para>
+
+  </section>
+
+  <section>
+    <title>Minecraft MALMO-s példa</title>
+    <para>
+      A <link xlink:href="https://github.com/Microsoft/malmo">
+        <filename>https://github.com/Microsoft/malmo</filename>
+      </link> felhasználásával egy ágens példa.
+    </para>
+
+
+
+    <para>
+A könyv első felében minden fejezethez tartozik egy Minecraft MALMO-s példa, a 8. fejezetben pedig egy teljes feladat erejéig irtam arról, hogy mi is pontosan a MALMO projekt. Emlékeztető képpen egy régebbi kódomat ismét bemutatom:
+    </para>
+
+
+    <para>Minecraft MALMÖ - Mit lát Steve?</para>
+    <para>
+      Forrás link: <link xlink:href="https://github.com/Amsekal/Bhax/blob/master/lat.py">
+        <filename>Github link</filename>
+      </link>
+    </para>
+    <para>
+      A feladat célja, hogy feldolgozzuk azt az információt, hogy mi van a karakterünk előtt, legyen az föld, levegő, láva, vagy virág, és ezt kiirjuk a képernyőre. Egy 3x3x3-as környezetben vizsgáljuk mindezt.
+    </para>
+
+
+  </section>
+
+</chapter>
